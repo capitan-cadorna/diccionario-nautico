@@ -1,0 +1,33 @@
+{
+  "name": "ar.com.diccionario_nautico",
+  "displayName": "Diccionario Náutico",
+  "version": "1.0.0",
+  "description": "Diccionario Náutico offline",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "ecosystem:cordova"
+  ],
+  "author": "",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "cordova-android": "^15.0.0",
+    "cordova-plugin-file": "^8.1.3",
+    "cordova-plugin-inappbrowser": "^6.0.0",
+    "cordova-sqlite-storage": "^7.0.0"
+  },
+  "cordova": {
+    "platforms": [
+      "android"
+    ],
+    "plugins": {
+      "cordova-sqlite-storage": {},
+      "cordova-plugin-file": {
+        "ANDROIDX_WEBKIT_VERSION": "1.4.0"
+      },
+      "cordova-plugin-inappbrowser": {}
+    }
+  }
+}

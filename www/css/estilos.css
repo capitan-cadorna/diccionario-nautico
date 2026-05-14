@@ -1,0 +1,403 @@
+/* =============================================
+   ESTILOS GENERALES
+   ============================================= */
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f9fd;
+    color: #0b3b4f;
+}
+
+#app {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 15px;
+}
+
+/* =============================================
+   SPLASH SCREEN (PANTALLA DE BIENVENIDA)
+   ============================================= */
+#splash {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 30px;
+    background: linear-gradient(135deg, #0a3b5a 0%, #1a5276 100%);
+    color: white;
+    text-align: center;
+}
+
+.splash-logo {
+    width: 100px;
+    height: 100px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+.splash-titulo {
+    font-size: 2em;
+    margin: 0 0 5px 0;
+}
+
+.splash-subtitulo {
+    font-size: 0.9em;
+    opacity: 0.8;
+    margin: 0 0 30px 0;
+}
+
+.splash-fecha {
+    font-size: 0.7em;
+    opacity: 0.6;
+    margin-top: 30px;
+}
+
+.btn-splash {
+    width: 100%;
+    max-width: 300px;
+    padding: 15px;
+    margin-bottom: 12px;
+    border: none;
+    border-radius: 25px;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-splash:active {
+    transform: scale(0.97);
+}
+
+.btn-splash-primario {
+    background: white;
+    color: #0a3b5a;
+}
+
+.btn-splash-secundario {
+    background: #f5c842;
+    color: #0a3b5a;
+}
+
+/* =============================================
+   PANTALLA DE ENLACES EXTERNOS
+   ============================================= */
+#enlaces-externos {
+    min-height: 100vh;
+    padding: 20px;
+    background-color: #e8f4f8;
+}
+
+#enlaces-externos h2 {
+    color: #0a3b5a;
+    margin-bottom: 20px;
+}
+
+.categoria-enlaces {
+    color: #0a3b5a;
+    margin: 15px 0 10px 0;
+    font-size: 1em;
+}
+
+.enlace-ext {
+    display: block;
+    padding: 12px 15px;
+    background: white;
+    color: #0a3b5a;
+    text-decoration: none;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    border-left: 4px solid #0a3b5a;
+    font-weight: 500;
+    transition: background 0.2s;
+}
+
+.enlace-ext:active {
+    background: #e8f4f8;
+}
+
+.btn-volver-splash {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 20px;
+    background-color: #cbe5fe;
+    color: #0a3b5a;
+    font-weight: bold;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+/* =============================================
+   CABECERA DE LA APP
+   ============================================= */
+header {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+header h1 {
+    font-size: 1.5em;
+    color: #0a3b5a;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.logo-header {
+    width: 30px;
+    height: 30px;
+    border-radius: 6px;
+    vertical-align: middle;
+}
+
+.fecha-header {
+    font-size: 0.7em;
+    color: #888;
+    margin: 5px 0 0 0;
+}
+
+.btn-actualizar-header {
+    margin-top: 8px;
+    padding: 6px 16px;
+    background: #f5c842;
+    color: #0a3b5a;
+    border: none;
+    border-radius: 15px;
+    font-size: 0.75em;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* =============================================
+   BUSCADOR PRINCIPAL
+   ============================================= */
+#input-buscar {
+    width: 100%;
+    padding: 15px;
+    font-size: 1em;
+    border: 2px solid #b0d4e3;
+    border-radius: 25px;
+    box-sizing: border-box;
+    margin-bottom: 20px;
+    background-color: white;
+}
+
+/* =============================================
+   RESULTADOS
+   ============================================= */
+#resultados h2 {
+    font-size: 1.2em;
+    color: #0a3b5a;
+    margin-bottom: 10px;
+}
+
+#lista-resultados {
+    list-style: none;
+    padding: 0;
+}
+
+#lista-resultados li {
+    background-color: white;
+    margin-bottom: 8px;
+    padding: 15px;
+    border-radius: 8px;
+    border-left: 5px solid #0a3b5a;
+    font-weight: 500;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    transition: background 0.2s;
+}
+
+#lista-resultados li:active {
+    background-color: #e8f4f8;
+}
+
+/* =============================================
+   VISTA DE DETALLE
+   ============================================= */
+#detalle {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.buscador-detalle {
+    margin-bottom: 15px;
+}
+
+#input-buscar-detalle {
+    width: 100%;
+    padding: 12px;
+    font-size: 1em;
+    border: 2px solid #b0d4e3;
+    border-radius: 25px;
+    box-sizing: border-box;
+    background-color: white;
+}
+
+.botones-detalle {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+#btn-volver {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 20px;
+    background-color: #cbe5fe;
+    color: #0a3b5a;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#btn-home {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 20px;
+    background-color: #cbe5fe;
+    cursor: pointer;
+}
+
+.icono-home {
+    width: 22px;
+    height: 22px;
+    vertical-align: middle;
+}
+
+#detalle-titulo {
+    color: #0a3b5a;
+    margin-bottom: 15px;
+}
+
+#detalle-definicion {
+    font-size: 1.05em;
+    line-height: 1.7;
+}
+
+/* =============================================
+   ENLACES INTERNOS Y EXTERNOS EN DEFINICIONES
+   ============================================= */
+.enlace-term {
+    color: #0a3b5a;
+    text-decoration: underline;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.enlace-web {
+    color: #1a5276;
+    text-decoration: underline;
+    font-weight: 500;
+    cursor: pointer;
+    border-bottom: 1px dotted #1a5276;
+}
+
+/* =============================================
+   DICCIONARIO TRILINGÜE
+   ============================================= */
+#trilingue {
+    padding: 15px;
+}
+
+#trilingue h2 {
+    color: #0a3b5a;
+    margin-bottom: 5px;
+}
+
+.subtitulo-triligue {
+    font-size: 0.85em;
+    color: #666;
+    margin-bottom: 15px;
+}
+
+.input-triligue {
+    width: 100%;
+    padding: 15px;
+    font-size: 1em;
+    border: 2px solid #b0d4e3;
+    border-radius: 25px;
+    box-sizing: border-box;
+    margin-bottom: 15px;
+}
+
+.placeholder-triligue {
+    color: #888;
+    text-align: center;
+    margin-top: 30px;
+}
+
+#resultado-triligue .tarjeta-triligue {
+    background: white;
+    border: 1px solid #b0d4e3;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 10px;
+}
+
+#resultado-triligue .tarjeta-triligue .fila-triligue {
+    margin-bottom: 6px;
+}
+
+#resultado-triligue .tarjeta-triligue .etiqueta-triligue {
+    font-weight: bold;
+    color: #0a3b5a;
+    font-size: 0.8em;
+    text-transform: uppercase;
+}
+
+#resultado-triligue .tarjeta-triligue .valor-triligue {
+    font-size: 0.95em;
+}
+
+/* =============================================
+   SUGERENCIAS (DROPDOWN DEL BUSCADOR)
+   ============================================= */
+#sugerencias-detalle {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    list-style: none;
+    padding: 0;
+    margin: 5px 0 0 0;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 9999;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+#sugerencias-detalle li {
+    padding: 10px 15px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+}
+
+#sugerencias-detalle li:last-child {
+    border-bottom: none;
+}
+
+/* =============================================
+   CORRECCIONES ENLACES EXTERNOS
+   ============================================= */
+#enlaces-externos {
+    overflow-x: hidden;
+    word-wrap: break-word;
+}
+
+.enlace-ext {
+    width: 100%;
+    box-sizing: border-box;
+    word-break: break-word;
+    white-space: normal;
+}

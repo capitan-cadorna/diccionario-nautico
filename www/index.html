@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Diccionario Náutico</title>
+    <!-- Enlace al archivo CSS externo -->
+    <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+
+    <!-- ========================================== -->
+    <!-- PANTALLA DE BIENVENIDA (SPLASH)           -->
+    <!-- ========================================== -->
+    <div id="splash">
+        <img src="img/icono-app.png" alt="Diccionario Náutico" class="splash-logo">
+        <h1 class="splash-titulo">Diccionario Náutico</h1>
+        <p class="splash-subtitulo">Más de 2.100 términos en tu bolsillo</p>
+        
+        <button id="btn-diccionario" class="btn-splash btn-splash-primario">
+            📖 Diccionario Náutico
+        </button>
+        
+        <button id="btn-triligue-splash" class="btn-splash btn-splash-primario">
+            🌍 Diccionario Trilingüe
+        </button>
+        
+        <button id="btn-enlaces" class="btn-splash btn-splash-secundario">
+            🔗 Enlaces Externos
+        </button>
+        
+        <p id="fecha-actualizacion-splash" class="splash-fecha"></p>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- PANTALLA DE ENLACES EXTERNOS              -->
+    <!-- ========================================== -->
+    <div id="enlaces-externos" style="display: none;">
+        <button id="btn-volver-splash" class="btn-volver-splash">← Volver</button>
+        <h2>🔗 Enlaces Externos</h2>
+        
+        <!-- Meteorología -->
+        <h3 class="categoria-enlaces">🌤️ Meteorología</h3>
+        <a href="https://diccionario-nautico.com.ar/escala-de-beaufort/" class="enlace-ext">Escala de Beaufort</a>
+        <a href="https://diccionario-nautico.com.ar/escala-de-douglas/" class="enlace-ext">Escala de Douglas</a>
+        <a href="https://diccionario-nautico.com.ar/meteoros/" class="enlace-ext">Símbolos Meteorológicos</a>
+        <a href="https://diccionario-nautico.com.ar/clasificacion-nubes/" class="enlace-ext">Clasificación de las Nubes</a>
+        <a href="https://diccionario-nautico.com.ar/intensidad-y-direccion-del-viento/" class="enlace-ext">Intensidad y dirección del viento</a>
+        <a href="https://diccionario-nautico.com.ar/rosa-de-los-vientos/" class="enlace-ext">Rosa de los Vientos</a>
+        
+        <!-- Seguridad -->
+        <h3 class="categoria-enlaces">🛟 Seguridad</h3>
+        <a href="https://diccionario-nautico.com.ar/ripa/" class="enlace-ext">RIPA</a>
+        <a href="https://diccionario-nautico.com.ar/ripa/luces-y-marcas/" class="enlace-ext">Luces y Marcas</a>
+        <a href="https://diccionario-nautico.com.ar/codigo-internacional-de-senales/" class="enlace-ext">Código Internacional de Señales</a>
+        <a href="https://diccionario-nautico.com.ar/sistema-de-boyado-maritimo-iala/" class="enlace-ext">Boyado Marítimo IALA</a>
+        <a href="https://diccionario-nautico.com.ar/senales-de-peligro/" class="enlace-ext">Señales de Peligro</a>
+        <a href="https://diccionario-nautico.com.ar/descripcion-de-luces-en-las-cartas/" class="enlace-ext">Descripción de luces en las cartas</a>
+        
+        <!-- Otros -->
+        <h3 class="categoria-enlaces">📚 Otros</h3>
+        <a href="https://diccionario-nautico.com.ar/diccionario-nautico-espanol-ingles-extenso/" class="enlace-ext">Diccionario Náutico Español - Inglés</a>
+        <a href="https://diccionario-nautico.com.ar/category/enciclopedia/" class="enlace-ext">Enciclopedia</a>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- APP PRINCIPAL (OCULTA AL INICIO)          -->
+    <!-- ========================================== -->
+    <div id="app" style="display: none;">
+        <!-- Cabecera -->
+		<header>
+			<div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+				<h1 style="margin: 0; flex: 1; min-width: 200px;">
+					<img src="img/icono-app.png" alt="⚓" class="logo-header">
+					Diccionario Náutico
+				</h1>
+				<button id="btn-volver-splash-header" style="padding: 8px 14px; border: none; border-radius: 20px; background-color: #cbe5fe; color: #0a3b5a; font-weight: bold; cursor: pointer; font-size: 0.85em;">🏠 Inicio</button>
+			</div>
+			<p id="fecha-actualizacion" class="fecha-header"></p>
+			<button id="btn-actualizar" class="btn-actualizar-header" style="display: none;">🔄 Actualizar diccionario</button>
+		</header>
+
+        <!-- Buscador principal -->
+        <section id="busqueda">
+            <input type="text" id="input-buscar" placeholder="Buscar término (ej. babor, estribor, escora)...">
+        </section>
+
+        <!-- Resultados -->
+        <section id="resultados">
+            <h2>Resultados</h2>
+            <ul id="lista-resultados">
+                <li><em>Escribe algo en el buscador...</em></li>
+            </ul>
+        </section>
+
+        <!-- Detalle del término (oculto al inicio) -->
+        <section id="detalle" style="display: none;">
+            <!-- Buscador en vista detalle -->
+            <div class="buscador-detalle">
+                <input type="text" id="input-buscar-detalle" placeholder="Buscar otro término...">
+            </div>
+            
+            <!-- Botones de navegación -->
+            <div class="botones-detalle">
+                <button id="btn-volver">← Volver</button>
+                <button id="btn-home" title="Ir al inicio">
+                    <img src="img/icono-home.png" alt="Inicio" class="icono-home">
+                </button>
+            </div>
+            
+            <h2 id="detalle-titulo">Término</h2>
+            <p id="detalle-definicion">Definición</p>
+        </section>
+
+        <!-- Diccionario Trilingüe -->
+        <section id="trilingue" style="display: none;">
+            <button id="btn-volver-triligue" class="btn-volver-splash">← Volver</button>
+            
+            <h2>🌍 Diccionario Trilingüe</h2>
+            <p class="subtitulo-triligue">Busca en español, inglés o francés</p>
+            
+            <input type="text" id="input-buscar-triligue" placeholder="Buscar en cualquier idioma..." class="input-triligue">
+            
+            <div id="resultado-triligue">
+                <p class="placeholder-triligue">Escribe al menos 2 letras para buscar</p>
+            </div>
+        </section>
+    </div>
+
+    <!-- Cordova -->
+    <script src="cordova.js"></script>
+    <!-- Nuestra app -->
+    <script src="js/app.js"></script>
+</body>
+</html>
