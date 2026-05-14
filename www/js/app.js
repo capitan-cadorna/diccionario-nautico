@@ -4,7 +4,7 @@
 const CONFIG = {
     dbName: 'diccionario.db',
     versionKey: 'db_version',
-    versionActual: '3.91' // Cambia esto manualmente al actualizar el JSON
+    versionActual: '3.92' // Cambia esto manualmente al actualizar el JSON
 };
 
 // =============================================
@@ -144,7 +144,7 @@ function verificarYActualizar() {
             console.log('📦 ' + data.length + ' términos leídos del JSON');
             insertarTerminos(data, function(total) {
                 alert('Diccionario recargado: ' + total + ' términos');
-                localStorage.setItem(CONFIG.versionKey, '3.91');
+                localStorage.setItem(CONFIG.versionKey, '3.92');
             });
         })
         .catch(error => {
@@ -185,7 +185,7 @@ function mostrarDetalle(term, guardarEnHistorial) {
             // Guardar el término actual con su título y definición directamente
             historial.push({
 				titulo: tituloActual,
-				definicion: document.getElementById('detalle-definicion').textContent
+				definicion: document.getElementById('detalle-definicion').innerHTML
 			});
         }
     }
@@ -268,7 +268,7 @@ function configurarUI() {
 		if (historial.length > 0) {
 			var terminoAnterior = historial.pop();
 			document.getElementById('detalle-titulo').textContent = terminoAnterior.titulo;
-			document.getElementById('detalle-definicion').innerHTML = formatearDefinicion(terminoAnterior.definicion);
+			document.getElementById('detalle-definicion').innerHTML = terminoAnterior.definicion;
 			
 			// Reasignar eventos a los enlaces
 			var enlaces = document.querySelectorAll('#detalle-definicion .enlace-term');
