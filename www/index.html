@@ -4,11 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Diccionario Náutico</title>
-    <!-- Enlace al archivo CSS externo -->
     <link rel="stylesheet" href="css/estilos.css">
 </head>
 <body>
-
     <!-- ========================================== -->
     <!-- PANTALLA DE BIENVENIDA (SPLASH)           -->
     <!-- ========================================== -->
@@ -17,17 +15,9 @@
         <h1 class="splash-titulo">Diccionario Náutico</h1>
         <p class="splash-subtitulo">Más de 2.100 términos en tu bolsillo</p>
         
-        <button id="btn-diccionario" class="btn-splash btn-splash-primario">
-            📖 Diccionario Náutico
-        </button>
-        
-        <button id="btn-triligue-splash" class="btn-splash btn-splash-primario">
-            🌍 Diccionario Trilingüe
-        </button>
-        
-        <button id="btn-enlaces" class="btn-splash btn-splash-secundario">
-            🔗 Enlaces Externos
-        </button>
+        <button id="btn-diccionario" class="btn-splash btn-splash-primario">📖 Diccionario Náutico</button>
+        <button id="btn-triligue-splash" class="btn-splash btn-splash-primario">🌍 Diccionario Trilingüe</button>
+        <button id="btn-enlaces" class="btn-splash btn-splash-secundario">🔗 Enlaces Externos</button>
         
         <p id="fecha-actualizacion-splash" class="splash-fecha"></p>
     </div>
@@ -36,16 +26,27 @@
     <!-- PANTALLA DE ENLACES EXTERNOS              -->
     <!-- ========================================== -->
     <div id="enlaces-externos" style="display: none;">
-		<header style="background-color: #0a3b5a; color: white; padding: 15px 20px; border-radius: 10px; margin-bottom: 20px;">
-			<span id="titulo-header-enlaces" style="font-size: 1.3em; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 8px;" title="Ir a la pantalla de inicio">
-				<img src="img/icono-app.png" alt="⚓" style="width: 28px; height: 28px; border-radius: 6px;">
-				Diccionario Náutico
-			</span>
-		</header>
-		
-		<h2 style="color: #0a3b5a; margin-bottom: 20px;">🔗 Enlaces Externos</h2>
+        <header style="background-color: #0a3b5a; color: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; box-sizing: border-box; position: relative;">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+                <div style="display: flex; align-items: center; gap: 10px; flex: 1;">
+                    <img src="img/icono-app.png" alt="⚓" style="width: 30px; height: 30px; border-radius: 6px;">
+                    <h1 id="volver-al-splash" style="margin: 0; color: white; font-size: 1.3em; cursor: pointer;">Diccionario Náutico</h1>
+                </div>
+                <button id="btn-menu" style="padding: 0; margin: 0; border: none; background: none; color: white; font-size: 1.5em; cursor: pointer; line-height: 1;">☰</button>
+                <nav id="menu-desplegable" style="display: none; position: absolute; top: 40px; right: 0; background: white; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.15); min-width: 220px; z-index: 1001; text-align: left;">
+                    <ul style="list-style: none; padding: 0; margin: 0;">
+                        <li id="menu-inicio" style="padding: 15px 20px; border-bottom: 1px solid #eee; cursor: pointer; color: #0a3b5a;">🏠 Inicio</li>
+                        <li id="menu-diccionario" style="padding: 15px 20px; border-bottom: 1px solid #eee; cursor: pointer; color: #0a3b5a;">📖 Diccionario Náutico</li>
+                        <li id="menu-triligue" style="padding: 15px 20px; border-bottom: 1px solid #eee; cursor: pointer; color: #0a3b5a;">🌍 Diccionario Trilingüe</li>
+                        <li id="menu-enlaces" style="padding: 15px 20px; border-bottom: 1px solid #eee; cursor: pointer; color: #0a3b5a;">🔗 Enlaces Externos</li>
+                        <li id="menu-compartir" style="padding: 15px 20px; border-bottom: 1px solid #eee; cursor: pointer; color: #0a3b5a;">📤 Compartir app</li>
+                        <li id="menu-acerca" style="padding: 15px 20px; cursor: pointer; color: #0a3b5a;">ℹ️ Acerca de</li>
+                    </ul>
+                </nav>
+            </div>
+        </header>
+        <h2>🔗 Enlaces Externos</h2>
         
-        <!-- Meteorología -->
         <h3 class="categoria-enlaces">🌤️ Meteorología</h3>
         <a href="https://diccionario-nautico.com.ar/escala-de-beaufort/" class="enlace-ext">Escala de Beaufort</a>
         <a href="https://diccionario-nautico.com.ar/escala-de-douglas/" class="enlace-ext">Escala de Douglas</a>
@@ -54,7 +55,6 @@
         <a href="https://diccionario-nautico.com.ar/intensidad-y-direccion-del-viento/" class="enlace-ext">Intensidad y dirección del viento</a>
         <a href="https://diccionario-nautico.com.ar/rosa-de-los-vientos/" class="enlace-ext">Rosa de los Vientos</a>
         
-        <!-- Seguridad -->
         <h3 class="categoria-enlaces">🛟 Seguridad</h3>
         <a href="https://diccionario-nautico.com.ar/ripa/" class="enlace-ext">RIPA</a>
         <a href="https://diccionario-nautico.com.ar/ripa/luces-y-marcas/" class="enlace-ext">Luces y Marcas</a>
@@ -63,7 +63,6 @@
         <a href="https://diccionario-nautico.com.ar/senales-de-peligro/" class="enlace-ext">Señales de Peligro</a>
         <a href="https://diccionario-nautico.com.ar/descripcion-de-luces-en-las-cartas/" class="enlace-ext">Descripción de luces en las cartas</a>
         
-        <!-- Otros -->
         <h3 class="categoria-enlaces">📚 Otros</h3>
         <a href="https://diccionario-nautico.com.ar/diccionario-nautico-espanol-ingles-extenso/" class="enlace-ext">Diccionario Náutico Español - Inglés</a>
         <a href="https://diccionario-nautico.com.ar/category/enciclopedia/" class="enlace-ext">Enciclopedia</a>
@@ -73,22 +72,30 @@
     <!-- APP PRINCIPAL (OCULTA AL INICIO)          -->
     <!-- ========================================== -->
     <div id="app" style="display: none;">
-        <!-- Cabecera -->
-		<header style="background-color: #0a3b5a; color: white; padding: 15px 20px; border-radius: 10px; margin-bottom: 20px;">
-		<span id="titulo-header" style="font-size: 1.3em; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 8px;" title="Ir a la pantalla de inicio">
-			<img src="img/icono-app.png" alt="⚓" style="width: 28px; height: 28px; border-radius: 6px;">
-			Diccionario Náutico
-		</span>
-			<p id="fecha-actualizacion" style="font-size: 0.65em; opacity: 0.7; margin: 0; flex-basis: 100%; text-align: right;"></p>
-			<button id="btn-actualizar" style="display: none; padding: 6px 14px; background: #f5c842; color: #0a3b5a; border: none; border-radius: 15px; font-size: 0.7em; cursor: pointer; font-weight: bold;">🔄 Actualizar</button>
-		</header>
+        <header style="background-color: #0a3b5a; color: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; box-sizing: border-box; position: relative;">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+                <div style="display: flex; align-items: center; gap: 10px; flex: 1;">
+                    <img src="img/icono-app.png" alt="⚓" style="width: 30px; height: 30px; border-radius: 6px;">
+                    <h1 id="volver-al-inicio" style="margin: 0; color: white; font-size: 1.3em; cursor: pointer;">Diccionario Náutico</h1>
+                </div>
+                <button id="btn-menu" style="padding: 0; margin: 0; border: none; background: none; color: white; font-size: 1.5em; cursor: pointer; line-height: 1;">☰</button>
+                <nav id="menu-desplegable" style="display: none; position: absolute; top: 40px; right: 0; background: white; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.15); min-width: 220px; z-index: 1001; text-align: left;">
+                    <ul style="list-style: none; padding: 0; margin: 0;">
+                        <li id="menu-inicio" style="padding: 15px 20px; border-bottom: 1px solid #eee; cursor: pointer; color: #0a3b5a;">🏠 Inicio</li>
+                        <li id="menu-diccionario" style="padding: 15px 20px; border-bottom: 1px solid #eee; cursor: pointer; color: #0a3b5a;">📖 Diccionario Náutico</li>
+                        <li id="menu-triligue" style="padding: 15px 20px; border-bottom: 1px solid #eee; cursor: pointer; color: #0a3b5a;">🌍 Diccionario Trilingüe</li>
+                        <li id="menu-enlaces" style="padding: 15px 20px; border-bottom: 1px solid #eee; cursor: pointer; color: #0a3b5a;">🔗 Enlaces Externos</li>
+                        <li id="menu-compartir" style="padding: 15px 20px; border-bottom: 1px solid #eee; cursor: pointer; color: #0a3b5a;">📤 Compartir app</li>
+                        <li id="menu-acerca" style="padding: 15px 20px; cursor: pointer; color: #0a3b5a;">ℹ️ Acerca de</li>
+                    </ul>
+                </nav>
+            </div>
+        </header>
 
-        <!-- Buscador principal -->
         <section id="busqueda">
             <input type="text" id="input-buscar" placeholder="Buscar término (ej. babor, estribor, escora)...">
         </section>
 
-        <!-- Resultados -->
         <section id="resultados">
             <h2>Resultados</h2>
             <ul id="lista-resultados">
@@ -96,43 +103,50 @@
             </ul>
         </section>
 
-        <!-- Detalle del término (oculto al inicio) -->
         <section id="detalle" style="display: none;">
-            <!-- Buscador en vista detalle -->
             <div class="buscador-detalle">
                 <input type="text" id="input-buscar-detalle" placeholder="Buscar otro término...">
             </div>
-            
-            <!-- Botones de navegación -->
-			<div class="botones-detalle" style="display: table-row; align-items: center; gap: 12px; margin-bottom: 15px;">
-				<button id="btn-volver" style="display: table-cell; background: none; border: none; cursor: pointer; padding: 5px;" title="Volver">
-					<img src="img/volver.png" alt="Volver" style="width: 44px; height: 44px;">
-				</button>
-				<button id="btn-home" style="display: table-cell; background: none; border: none; cursor: pointer; padding: 5px;" title="Inicio">
-					<img src="img/home.png" alt="Inicio" style="width: 44px; height: 44px;">
-				</button>
-			</div>
-            
+            <div class="botones-detalle">
+                <button id="btn-volver">← Volver</button>
+                <button id="btn-home" title="Ir al inicio">
+                    <img src="img/icono-home.png" alt="Inicio" class="icono-home">
+                </button>
+            </div>
             <h2 id="detalle-titulo">Término</h2>
             <p id="detalle-definicion">Definición</p>
         </section>
 
-        <!-- Diccionario Trilingüe -->
-		<section id="trilingue" style="display: none;">
-			<h2 style="color: #0a3b5a; margin-bottom: 5px;">🌍 Diccionario Trilingüe</h2>
-			<p style="font-size: 0.85em; color: #666; margin-bottom: 15px;">Busca en español, inglés o francés</p>
-			
-			<input type="text" id="input-buscar-triligue" placeholder="Buscar en cualquier idioma..." style="width: 100%; padding: 15px; font-size: 1em; border: 2px solid #b0d4e3; border-radius: 25px; box-sizing: border-box; margin-bottom: 15px;">
-			
-			<div id="resultado-triligue">
-				<p style="color: #888; text-align: center; margin-top: 30px;">Escribe al menos 2 letras para buscar</p>
-			</div>
-		</section>
+        <section id="trilingue" style="display: none;">
+            <header style="background-color: #0a3b5a; color: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; box-sizing: border-box; position: relative;">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <div style="display: flex; align-items: center; gap: 10px; flex: 1;">
+                        <img src="img/icono-app.png" alt="⚓" style="width: 30px; height: 30px; border-radius: 6px;">
+                        <h1 id="volver-al-inicio-triligue" style="margin: 0; color: white; font-size: 1.3em; cursor: pointer;">Diccionario Náutico</h1>
+                    </div>
+                    <button id="btn-menu" style="padding: 0; margin: 0; border: none; background: none; color: white; font-size: 1.5em; cursor: pointer; line-height: 1;">☰</button>
+                    <nav id="menu-desplegable" style="display: none; position: absolute; top: 40px; right: 0; background: white; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.15); min-width: 220px; z-index: 1001; text-align: left;">
+                        <ul style="list-style: none; padding: 0; margin: 0;">
+                            <li id="menu-inicio" style="padding: 15px 20px; border-bottom: 1px solid #eee; cursor: pointer; color: #0a3b5a;">🏠 Inicio</li>
+                            <li id="menu-diccionario" style="padding: 15px 20px; border-bottom: 1px solid #eee; cursor: pointer; color: #0a3b5a;">📖 Diccionario Náutico</li>
+                            <li id="menu-triligue" style="padding: 15px 20px; border-bottom: 1px solid #eee; cursor: pointer; color: #0a3b5a;">🌍 Diccionario Trilingüe</li>
+                            <li id="menu-enlaces" style="padding: 15px 20px; border-bottom: 1px solid #eee; cursor: pointer; color: #0a3b5a;">🔗 Enlaces Externos</li>
+                            <li id="menu-compartir" style="padding: 15px 20px; border-bottom: 1px solid #eee; cursor: pointer; color: #0a3b5a;">📤 Compartir app</li>
+                            <li id="menu-acerca" style="padding: 15px 20px; cursor: pointer; color: #0a3b5a;">ℹ️ Acerca de</li>
+                        </ul>
+                    </nav>
+                </div>
+            </header>
+            <h2>🌍 Diccionario Trilingüe</h2>
+            <p class="subtitulo-triligue">Busca en español, inglés o francés</p>
+            <input type="text" id="input-buscar-triligue" placeholder="Buscar en cualquier idioma..." class="input-triligue">
+            <div id="resultado-triligue">
+                <p class="placeholder-triligue">Escribe al menos 2 letras para buscar</p>
+            </div>
+        </section>
     </div>
 
-    <!-- Cordova -->
     <script src="cordova.js"></script>
-    <!-- Nuestra app -->
     <script src="js/app.js"></script>
 </body>
 </html>
