@@ -4,7 +4,7 @@
 const CONFIG = {
     dbName: 'diccionario.db',
     versionKey: 'db_version',
-    versionActual: '4.30'
+    versionActual: '4.36'
 };
 
 // =============================================
@@ -38,6 +38,33 @@ function onDeviceReady() {
     if (fechaElem && fecha) {
         fechaElem.textContent = '📅 Actualizado: ' + fecha;
     }
+	function actualizarContadorSplash() {
+		setTimeout(function() {
+			db.executeSql(
+				'SELECT COUNT(*) as total FROM terminos',
+				[],
+				function(rs) {
+					var total = rs.rows.item(0).total;
+					console.log('📊 Total términos en BD: ' + total);
+					
+					var splashSubtitulo = document.querySelector('.splash-subtitulo');
+					if (splashSubtitulo) {
+						splashSubtitulo.textContent = total + ' términos náuticos en tu bolsillo';
+						console.log('✅ Texto del splash actualizado');
+					} else {
+						console.warn('⚠️ No se encontró .splash-subtitulo');
+					}
+				},
+				function(error) {
+					console.error('Error al contar términos:', error);
+				}
+			);
+		}, 500); // Pequeño retraso para asegurar que la BD está lista
+	}
+	// Actualizar contador si ya hay datos cargados
+    setTimeout(function() {
+        actualizarContadorSplash();
+    }, 1000);
 }
 
 // =============================================
@@ -123,16 +150,47 @@ function buscarTerminoExacto(texto, callback) {
 // =============================================
 function verificarYActualizar() {
     var versionLocal = localStorage.getItem(CONFIG.versionKey) || '0';
+    var fechaLocal = localStorage.getItem('diccionario_fecha') || '';
     
+    // Mostrar fecha en el splash
+    var splashFecha = document.getElementById('fecha-actualizacion-splash');
+    if (splashFecha) {
+        if (!fechaLocal || fechaLocal === '0') {
+            splashFecha.textContent = '📅 Diccionario precargado';
+        } else {
+            splashFecha.textContent = '📅 Actualizado: ' + fechaLocal;
+        }
+    }
+    
+    // Mostrar fecha en el header de la app
+    var fechaElem = document.getElementById('fecha-actualizacion');
+    if (fechaElem) {
+        if (!fechaLocal || fechaLocal === '0') {
+            fechaElem.textContent = '📅 Diccionario precargado';
+        } else {
+            fechaElem.textContent = '📅 Actualizado: ' + fechaLocal;
+        }
+    }
+    
+    // Cargar datos si es primera vez o versión desactualizada
     if (versionLocal !== CONFIG.versionActual) {
         fetch('js/diccionario_data.json')
-            .then(response => response.json())
-            .then(data => {
+            .then(function(response) { return response.json(); })
+            .then(function(data) {
                 insertarTerminos(data, function(total) {
-                    localStorage.setItem('diccionario_fecha', 'Integrada');
+                    var fechaHoy = new Date().toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
+                    localStorage.setItem(CONFIG.versionKey, CONFIG.versionActual);
+                    localStorage.setItem('diccionario_fecha', fechaHoy);
+                    
+                    // Actualizar textos de fecha
+                    if (splashFecha) splashFecha.textContent = '📅 Actualizado: ' + fechaHoy;
+                    if (fechaElem) fechaElem.textContent = '📅 Actualizado: ' + fechaHoy;
+					actualizarContadorSplash();
                 });
             })
-            .catch(error => console.error('❌ Error:', error));
+            .catch(function(error) {
+                console.error('❌ Error al cargar JSON:', error);
+            });
     }
 }
 
