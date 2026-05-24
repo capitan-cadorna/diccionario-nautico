@@ -4,7 +4,7 @@
 const CONFIG = {
     dbName: 'diccionario.db',
     versionKey: 'db_version',
-    versionActual: '4.36'
+    versionActual: '4.5'
 };
 
 // =============================================
@@ -117,32 +117,80 @@ function buscarTerminos(texto, callback) {
 }
 
 function buscarTerminoExacto(texto, callback) {
+    var busqueda = texto.toLowerCase().trim();
+    
+    // 1. Buscar exacto (con tilde, tal cual viene del marcador)
     db.executeSql(
         'SELECT * FROM terminos WHERE LOWER(titulo) = ? LIMIT 1',
-        [texto.toLowerCase()],
+        [busqueda],
         function(rs) {
             if (rs.rows.length > 0) {
                 callback(rs.rows.item(0));
                 return;
             }
-            var textoSinUltima = texto.slice(0, -1);
+            
+            // 2. Buscar sin acentos (el slug no lleva tilde pero el título sí)
+            // Reemplazamos letras con tilde por sin tilde en ambos lados
+            var busquedaSinAcentos = quitarAcentos(busqueda);
+            
+            // Crear una consulta que compare ignorando acentos
             db.executeSql(
-                'SELECT * FROM terminos WHERE LOWER(titulo) = ? LIMIT 1',
-                [textoSinUltima.toLowerCase()],
-                function(rs2) {
-                    if (rs2.rows.length > 0) {
-                        callback(rs2.rows.item(0));
-                    } else {
-                        buscarTerminos(texto, function(resultados) {
-                            callback(resultados.length > 0 ? resultados[0] : null);
-                        });
+                'SELECT * FROM terminos ORDER BY LOWER(titulo) ASC',
+                [],
+                function(rsTodos) {
+                    // Buscar manualmente comparando sin acentos
+                    for (var i = 0; i < rsTodos.rows.length; i++) {
+                        var term = rsTodos.rows.item(i);
+                        var tituloSinAcentos = quitarAcentos(term.titulo.toLowerCase());
+                        if (tituloSinAcentos === busquedaSinAcentos) {
+                            callback(term);
+                            return;
+                        }
                     }
+                    
+                    // 3. Si no encuentra, buscar por raíz sin acentos
+                    var raiz = busquedaSinAcentos.substring(0, Math.min(6, busquedaSinAcentos.length));
+                    for (var j = 0; j < rsTodos.rows.length; j++) {
+                        var term2 = rsTodos.rows.item(j);
+                        var tituloSinAcentos2 = quitarAcentos(term2.titulo.toLowerCase());
+                        if (tituloSinAcentos2.indexOf(raiz) === 0) {
+                            callback(term2);
+                            return;
+                        }
+                    }
+                    
+                    // 4. Último recurso: LIKE genérico
+                    buscarTerminos(busqueda, function(resultados) {
+                        if (resultados.length > 0) {
+                            callback(resultados[0]);
+                        } else {
+                            callback(null);
+                        }
+                    });
                 },
-                function() { callback(null); }
+                function() {
+                    callback(null);
+                }
             );
         },
-        function(error) { console.error('Error:', error); callback(null); }
+        function(error) {
+            console.error('Error en búsqueda exacta:', error);
+            callback(null);
+        }
     );
+}
+
+// Función auxiliar para quitar acentos
+function quitarAcentos(texto) {
+    var mapa = {
+        'á': 'a', 'é': 'e', 'í': 'i', 'ó': 'o', 'ú': 'u',
+        'à': 'a', 'è': 'e', 'ì': 'i', 'ò': 'o', 'ù': 'u',
+        'ä': 'a', 'ë': 'e', 'ï': 'i', 'ö': 'o', 'ü': 'u',
+        'â': 'a', 'ê': 'e', 'î': 'i', 'ô': 'o', 'û': 'u'
+    };
+    return texto.replace(/[áéíóúàèìòùäëïöüâêîôû]/g, function(letra) {
+        return mapa[letra] || letra;
+    });
 }
 
 // =============================================
@@ -198,14 +246,16 @@ function verificarYActualizar() {
 // INTERFAZ
 // =============================================
 function formatearDefinicion(texto) {
-    // Enlaces web externos
+    // Convertir marcadores WEB:url|texto en enlaces externos
     texto = texto.replace(/\[\[WEB:([^|]+)\|([^\]]+)\]\]/g, function(match, url, term) {
         return '<span class="enlace-web" data-url="' + url + '">' + term + '</span>';
     });
-    // Enlaces internos
-    texto = texto.replace(/\[\[([^\]]+)\]\]/g, function(match, term) {
-        return '<span class="enlace-term" data-term="' + term + '">' + term + '</span>';
+    
+    // Convertir marcadores [[slug|texto visible]] en spans interactivos
+    texto = texto.replace(/\[\[([^|]+)\|([^\]]+)\]\]/g, function(match, slug, term) {
+        return '<span class="enlace-term" data-term="' + slug + '">' + term + '</span>';
     });
+    
     return texto;
 }
 

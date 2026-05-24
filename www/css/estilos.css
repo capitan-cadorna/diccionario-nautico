@@ -251,7 +251,7 @@ header h1 {
     flex: 1;
     padding: 10px;
     border: none;
-    border-radius: 20px;
+    border-radius: 10px;
     background-color: #cbe5fe;
     color: #0a3b5a;
     font-weight: bold;
@@ -261,7 +261,7 @@ header h1 {
 #btn-home {
     padding: 8px 12px;
     border: none;
-    border-radius: 20px;
+    border-radius: 10px;
     background-color: #cbe5fe;
     cursor: pointer;
 }
