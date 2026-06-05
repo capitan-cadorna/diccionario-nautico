@@ -2,22 +2,28 @@
 <widget id="ar.com.diccionario_nautico" version="1.0.0" android-versionCode="10005" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>Diccionario Náutico</name>
     <description>
-        A sample Apache Cordova application that responds to the deviceready event.
+        Diccionario Náutico con más de 2000 términos
     </description>
-    <author email="dev@cordova.apache.org" href="https://cordova.apache.org">
-        Apache Cordova Team
+    <author email="capitan.cadorna@proton.me" href="https://diccionario-nautico.com.ar">
+        Nautiapps
     </author>
     <content src="index.html" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
-	
-<platform name="android">
-    <icon density="mdpi" src="icono.png" />
-    <icon density="hdpi" src="icono.png" />
-    <icon density="xhdpi" src="icono.png" />
-    <icon density="xxhdpi" src="icono.png" />
-    <icon density="xxxhdpi" src="icono.png" />
-</platform>
+    
+    <!-- Configuración de iconos Android -->
+    <platform name="android">
+        <icon density="mdpi" src="icono.png" />
+        <icon density="hdpi" src="icono.png" />
+        <icon density="xhdpi" src="icono.png" />
+        <icon density="xxhdpi" src="icono.png" />
+        <icon density="xxxhdpi" src="icono.png" />
+    </platform>
+    
+    <!-- Habilitar Kotlin para el plugin moderno de AdMob -->
+    <preference name="GradlePluginKotlinEnabled" value="true" />
+    <preference name="GradlePluginKotlinVersion" value="1.9.0" />
+    
 </widget>
 
 

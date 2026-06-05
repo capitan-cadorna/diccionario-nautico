@@ -4,7 +4,7 @@
 const CONFIG = {
     dbName: 'diccionario.db',
     versionKey: 'db_version',
-    versionActual: '4.5'
+    versionActual: '5.7'
 };
 
 // =============================================
@@ -14,12 +14,17 @@ let db = null;
 let historial = [];
 
 // =============================================
+// ADMOB
+// =============================================
+let bannerAd = null;
+
+// =============================================
 // INICIALIZACIÓN
 // =============================================
 document.addEventListener('deviceready', onDeviceReady, false);
 
 function onDeviceReady() {
-	
+    console.log('🚨 PRUEBA DE FUEGO: EL CÓDIGO NUEVO SÍ ESTÁ AQUÍ 🚨');
     console.log('✅ Dispositivo listo');
     
     db = window.sqlitePlugin.openDatabase({
@@ -28,7 +33,6 @@ function onDeviceReady() {
     });
     
     crearTabla();
-    initAdMob();
     configurarUI();
     verificarYActualizar();
     
@@ -38,33 +42,36 @@ function onDeviceReady() {
     if (fechaElem && fecha) {
         fechaElem.textContent = '📅 Actualizado: ' + fecha;
     }
-	function actualizarContadorSplash() {
-		setTimeout(function() {
-			db.executeSql(
-				'SELECT COUNT(*) as total FROM terminos',
-				[],
-				function(rs) {
-					var total = rs.rows.item(0).total;
-					console.log('📊 Total términos en BD: ' + total);
-					
-					var splashSubtitulo = document.querySelector('.splash-subtitulo');
-					if (splashSubtitulo) {
-						splashSubtitulo.textContent = total + ' términos náuticos en tu bolsillo';
-						console.log('✅ Texto del splash actualizado');
-					} else {
-						console.warn('⚠️ No se encontró .splash-subtitulo');
-					}
-				},
-				function(error) {
-					console.error('Error al contar términos:', error);
-				}
-			);
-		}, 500); // Pequeño retraso para asegurar que la BD está lista
-	}
-	// Actualizar contador si ya hay datos cargados
+
+    function actualizarContadorSplash() {
+        setTimeout(function() {
+            db.executeSql(
+                'SELECT COUNT(*) as total FROM terminos',
+                [],
+                function(rs) {
+                    var total = rs.rows.item(0).total;
+                    console.log('📊 Total términos en BD: ' + total);
+                    
+                    var splashSubtitulo = document.querySelector('.splash-subtitulo');
+                    if (splashSubtitulo) {
+                        splashSubtitulo.textContent = total + ' términos náuticos en tu bolsillo';
+                        console.log('✅ Texto del splash actualizado');
+                    } else {
+                        console.warn('⚠️ No se encontró .splash-subtitulo');
+                    }
+                },
+                function(error) {
+                    console.error('Error al contar términos:', error);
+                }
+            );
+        }, 500);
+    }
+
     setTimeout(function() {
         actualizarContadorSplash();
     }, 1000);
+    // Ocultar banner en el splash screen
+    document.dispatchEvent(new Event('hide-banner'));
 }
 
 // =============================================
@@ -475,6 +482,8 @@ document.getElementById('btn-diccionario').addEventListener('click', function() 
     document.getElementById('resultados').style.display = 'block';
     document.getElementById('detalle').style.display = 'none';
 	document.querySelector('#app > header').style.display = 'block';
+	// Mostrar banner al entrar al diccionario
+    document.dispatchEvent(new Event('show-banner'));
 });
 
 document.getElementById('btn-triligue-splash').addEventListener('click', function() {
@@ -486,6 +495,8 @@ document.getElementById('btn-triligue-splash').addEventListener('click', functio
     document.getElementById('detalle').style.display = 'none';
     document.getElementById('trilingue').style.display = 'block';
 	document.querySelector('#app > header').style.display = 'none';
+    // Mostrar banner al entrar al trilingüe
+    document.dispatchEvent(new Event('show-banner'));
 });
 
 document.getElementById('btn-enlaces').addEventListener('click', function() {
@@ -493,6 +504,8 @@ document.getElementById('btn-enlaces').addEventListener('click', function() {
     document.getElementById('app').style.display = 'none';
     document.getElementById('trilingue').style.display = 'none';
     document.getElementById('enlaces-externos').style.display = 'block';
+    // Mostrar banner al entrar a enlaces
+    document.dispatchEvent(new Event('show-banner'));
 });
 
 // Enlaces externos: abrir en navegador
@@ -507,17 +520,6 @@ document.querySelectorAll('.enlace-ext').forEach(function(enlace) {
         }
     });
 });
-
-// =============================================
-// PUBLICIDAD
-// =============================================
-function initAdMob() {
-    var adContainer = document.createElement('div');
-    adContainer.id = 'ad-container';
-    adContainer.style.cssText = 'width:100%; height:50px; background-color:#0a3b5a; color:white; text-align:center; line-height:50px; font-size:14px; font-family:sans-serif; position:fixed; bottom:0; left:0; z-index:9999;';
-    adContainer.textContent = '📢 Espacio publicitario';
-    document.body.appendChild(adContainer);
-}
 
 // Cargar trilingüe al iniciar
 cargarDiccionarioTrilingue();
@@ -562,6 +564,7 @@ asignarMenu('menu-inicio', function() {
     document.getElementById('trilingue').style.display = 'none';
     document.getElementById('splash').style.display = 'flex';
     document.querySelector('#app > header').style.display = 'block';
+	document.dispatchEvent(new Event('hide-banner'));
 });
 
 // 📖 Diccionario Náutico
@@ -574,6 +577,7 @@ asignarMenu('menu-diccionario', function() {
     document.getElementById('resultados').style.display = 'block';
     document.getElementById('detalle').style.display = 'none';
     document.querySelector('#app > header').style.display = 'block';
+	document.dispatchEvent(new Event('show-banner'));
 });
 
 // 🌍 Diccionario Trilingüe
@@ -586,6 +590,7 @@ asignarMenu('menu-triligue', function() {
     document.getElementById('detalle').style.display = 'none';
     document.getElementById('trilingue').style.display = 'block';
     document.querySelector('#app > header').style.display = 'none';
+	document.dispatchEvent(new Event('show-banner'));
 });
 
 // 🔗 Enlaces Externos
@@ -594,6 +599,7 @@ asignarMenu('menu-enlaces', function() {
     document.getElementById('app').style.display = 'none';
     document.getElementById('trilingue').style.display = 'none';
     document.getElementById('enlaces-externos').style.display = 'block';
+	document.dispatchEvent(new Event('show-banner'));
 });
 
 // 📤 Compartir app
@@ -624,6 +630,9 @@ document.querySelectorAll('#volver-al-inicio, #volver-al-splash, #volver-al-inic
         document.getElementById('trilingue').style.display = 'none';
         document.getElementById('splash').style.display = 'flex';
         document.querySelector('#app > header').style.display = 'block';
+        
+        // 👇 AÑADIR ESTA LÍNEA: Ocultar banner al volver al splash
+        document.dispatchEvent(new Event('hide-banner'));
     });
 });
 

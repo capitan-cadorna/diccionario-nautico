@@ -32,3 +32,4 @@ node_modules/
 *.keystore
 release-signing.properties
 Thumbs.db
+build.json
