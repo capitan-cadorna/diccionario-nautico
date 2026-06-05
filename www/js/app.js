@@ -4,7 +4,7 @@
 const CONFIG = {
     dbName: 'diccionario.db',
     versionKey: 'db_version',
-    versionActual: '5.7'
+    versionActual: '5.94'
 };
 
 // =============================================
@@ -615,8 +615,23 @@ asignarMenu('menu-compartir', function() {
 
 // ℹ️ Acerca de
 asignarMenu('menu-acerca', function() {
-    alert('⚓ Diccionario Náutico\n\nVersión: ' + CONFIG.versionActual + 
-          '\n\nDesarrollado por Capitan Cadorna\ndiccionario-nautico.com.ar\n\n© ' + new Date().getFullYear());
+    let mensaje = '⚓ Diccionario Náutico\n\nCargando versión...';
+    
+    // Intentamos leer la versión automáticamente desde config.xml
+    if (navigator.notification && window.cordova && cordova.getAppVersion) {
+        cordova.getAppVersion.getVersionNumber().then(function(version) {
+            mensaje = '⚓ Diccionario Náutico\n\nVersión: ' + version + 
+                      '\n\nDesarrollado por Nautiapps\ndiccionario-nautico.com.ar\n\n© ' + new Date().getFullYear();
+            
+            navigator.notification.alert(mensaje, null, 'Acerca de', 'Cerrar');
+        }).catch(function() {
+            // Respaldo por si falla la lectura
+            navigator.notification.alert('⚓ Diccionario Náutico\n\nVersión: 1.0.8\n\nDesarrollado por Nautiapps\ndiccionario-nautico.com.ar', null, 'Acerca de', 'Cerrar');
+        });
+    } else {
+        // Respaldo si no está en dispositivo
+        alert('⚓ Diccionario Náutico\n\nVersión: 1.0.8\n\nDesarrollado por Nautiapps\ndiccionario-nautico.com.ar');
+    }
 });
 
 // Títulos "Diccionario Náutico" como botón Volver al splash

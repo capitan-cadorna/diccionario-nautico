@@ -87,8 +87,8 @@ body, html {
    ============================================= */
 #enlaces-externos {
     min-height: 100vh;
-    padding: 20px;
     background-color: #e8f4f8;
+    padding: 15px;
 }
 
 #enlaces-externos h2 {
@@ -304,7 +304,7 @@ header h1 {
    DICCIONARIO TRILINGÜE
    ============================================= */
 #trilingue {
-    padding: 15px;
+    /*padding: 15px;*/
 }
 
 #trilingue h2 {
