@@ -135,9 +135,9 @@ body, html {
    CABECERA DE LA APP
    ============================================= */
 header {
-    margin-bottom: 20px;
+    margin: 20px 0 20px 0!important;
     text-align: center;
-    padding: 35px 15px 15px 15px  !important;
+    padding: 15px  !important;
 	background-color: #0a3b5a; 
 	color: white; 
 	border-radius: 8px; 

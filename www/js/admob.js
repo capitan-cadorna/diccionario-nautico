@@ -12,12 +12,12 @@ document.addEventListener('deviceready', async function() {
         console.log('✅ [ADMOB.JS] SDK inicializado.');
 
         // 2. Crear banner adaptable
-        window.bannerAd = new admob.BannerAd({
-            adUnitId: 'ca-app-pub-3447093666998031/2796606187',
-            position: 'bottom',
-            size: 'SMART_BANNER', // Solicita tamaño adaptable
-            margin: 0
-        });
+		window.bannerAd = new admob.BannerAd({
+			adUnitId: 'ca-app-pub-3447093666998031/2796606187',
+			position: 'bottom',
+			size: 'ADAPTIVE_BANNER',
+			offset: 50 // <-- Esto eleva el banner 50px desde el borde inferior
+		});
 
         // 3. Retrasar la acción inicial para que el WebView mida bien el ancho
         setTimeout(async () => {
