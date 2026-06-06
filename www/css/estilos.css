@@ -7,10 +7,6 @@ body, html {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #f4f9fd;
     color: #0b3b4f;
-	/* Seguro contra superposición de barra de estado y botones de navegación */
-    padding-top: 30px !important;       
-    padding-bottom: 30px !important;    
-    box-sizing: border-box;
 }
 
 #app {
