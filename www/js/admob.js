@@ -16,7 +16,7 @@ document.addEventListener('deviceready', async function() {
 			adUnitId: 'ca-app-pub-3447093666998031/2796606187',
 			position: 'bottom',
 			size: 'ADAPTIVE_BANNER',
-			offset: 50 // <-- Esto eleva el banner 50px desde el borde inferior
+			offset: 60 // Lo mantiene a salvo por encima de los botones
 		});
 
         // 3. Retrasar la acción inicial para que el WebView mida bien el ancho
