@@ -137,6 +137,12 @@ body, html {
 header {
     margin-bottom: 20px;
     text-align: center;
+    padding: 35px 15px 15px 15px  !important;
+	background-color: #0a3b5a; 
+	color: white; 
+	border-radius: 8px; 
+	box-sizing: border-box; 
+	position: relative;"
 }
 
 header h1 {

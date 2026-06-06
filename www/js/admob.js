@@ -28,17 +28,16 @@ document.addEventListener('deviceready', async function() {
 		document.addEventListener('show-banner', async () => {
 			if (window.bannerAd) {
 				await window.bannerAd.show();
-				document.getElementById('app').style.paddingBottom = '80px';
+				document.body.style.paddingBottom = '90px'; // 50px banner + 40px botones Android
 			}
 		});
 
 		document.addEventListener('hide-banner', async () => {
 			if (window.bannerAd) {
 				await window.bannerAd.hide();
-				document.getElementById('app').style.paddingBottom = '0px';
+				document.body.style.paddingBottom = '0px';
 			}
-		});
-		
+		});	
     } catch (error) {
         console.error('❌ [ADMOB.JS] Error crítico:', error);
     }
