@@ -25,10 +25,12 @@ document.addEventListener('deviceready', async function() {
             console.log('✅ [ADMOB.JS] Banner creado, medido y OCULTO. Esperando navegación...');
         }, 500); // 500ms es suficiente para que el CSS se estabilice
 
-        // 4. Configurar listeners para control manual
+        // 3. Configurar listeners para control manual
         document.addEventListener('show-banner', async () => {
             if (window.bannerAd) {
                 await window.bannerAd.show();
+                // Empujamos el contenido web hacia arriba para que no lo tapen los botones de Android
+                document.body.style.paddingBottom = '80px'; 
                 console.log('✅ [ADMOB.JS] Banner visible.');
             }
         });
@@ -36,6 +38,8 @@ document.addEventListener('deviceready', async function() {
         document.addEventListener('hide-banner', async () => {
             if (window.bannerAd) {
                 await window.bannerAd.hide();
+                // Quitamos el margen cuando volvemos al splash
+                document.body.style.paddingBottom = '0px';
                 console.log('✅ [ADMOB.JS] Banner oculto.');
             }
         });
