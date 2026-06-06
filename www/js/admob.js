@@ -28,13 +28,14 @@ document.addEventListener('deviceready', async function() {
 		document.addEventListener('show-banner', async () => {
 			if (window.bannerAd) {
 				await window.bannerAd.show();
-				document.body.style.paddingBottom = 'calc(env(safe-area-inset-bottom) + 80px)';
+				document.getElementById('app').style.paddingBottom = '80px';
 			}
 		});
+
 		document.addEventListener('hide-banner', async () => {
 			if (window.bannerAd) {
 				await window.bannerAd.hide();
-				document.body.style.paddingBottom = 'env(safe-area-inset-bottom)';
+				document.getElementById('app').style.paddingBottom = '0px';
 			}
 		});
 		

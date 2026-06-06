@@ -4,7 +4,7 @@
 const CONFIG = {
     dbName: 'diccionario.db',
     versionKey: 'db_version',
-    versionActual: '5.97'
+    versionActual: '5.99'
 };
 
 // =============================================

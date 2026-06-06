@@ -7,11 +7,7 @@ body, html {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #f4f9fd;
     color: #0b3b4f;
-
-/* Solución definitiva para barras de estado y navegación en Android Release */
-    padding-top: env(safe-area-inset-top);
-    padding-bottom: env(safe-area-inset-bottom);
-    box-sizing: border-box;
+    /*box-sizing: border-box;*/
 }
 
 #app {
