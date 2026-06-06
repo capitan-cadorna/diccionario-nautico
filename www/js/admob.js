@@ -25,24 +25,21 @@ document.addEventListener('deviceready', async function() {
             console.log('✅ [ADMOB.JS] Banner creado, medido y OCULTO. Esperando navegación...');
         }, 500); // 500ms es suficiente para que el CSS se estabilice
 
-        // 3. Configurar listeners para control manual
-        document.addEventListener('show-banner', async () => {
-            if (window.bannerAd) {
-                await window.bannerAd.show();
-                // Empujamos el contenido web hacia arriba para que no lo tapen los botones de Android
-                document.body.style.paddingBottom = '80px'; 
-                console.log('✅ [ADMOB.JS] Banner visible.');
-            }
-        });
+		document.addEventListener('show-banner', async () => {
+			if (window.bannerAd) {
+				await window.bannerAd.show();
+				// Sumamos 80px al espacio seguro inferior ya existente
+				document.body.style.paddingBottom = 'calc(env(safe-area-inset-bottom, 0px) + 80px)';
+			}
+		});
 
-        document.addEventListener('hide-banner', async () => {
-            if (window.bannerAd) {
-                await window.bannerAd.hide();
-                // Quitamos el margen cuando volvemos al splash
-                document.body.style.paddingBottom = '0px';
-                console.log('✅ [ADMOB.JS] Banner oculto.');
-            }
-        });
+		document.addEventListener('hide-banner', async () => {
+			if (window.bannerAd) {
+				await window.bannerAd.hide();
+				// Volvemos solo al espacio seguro inferior (sin el banner)
+				document.body.style.paddingBottom = 'env(safe-area-inset-bottom, 0px)';
+			}
+		});
 
     } catch (error) {
         console.error('❌ [ADMOB.JS] Error crítico:', error);

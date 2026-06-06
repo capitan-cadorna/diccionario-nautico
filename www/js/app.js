@@ -4,7 +4,7 @@
 const CONFIG = {
     dbName: 'diccionario.db',
     versionKey: 'db_version',
-    versionActual: '5.96'
+    versionActual: '5.97'
 };
 
 // =============================================
@@ -24,10 +24,6 @@ let bannerAd = null;
 document.addEventListener('deviceready', onDeviceReady, false);
 
 function onDeviceReady() {
-    // Forzar iconos oscuros en la barra de estado
-    if (window.StatusBar) {
-        StatusBar.styleDefault(); 
-    }
     
     console.log('🚨 PRUEBA DE FUEGO: EL CÓDIGO NUEVO SÍ ESTÁ AQUÍ 🚨');
     console.log('✅ Dispositivo listo');
