@@ -4,7 +4,7 @@
 const CONFIG = {
     dbName: 'diccionario.db',
     versionKey: 'db_version',
-    versionActual: '6.03'
+    versionActual: '6.04'
 };
 
 // =============================================
@@ -476,6 +476,9 @@ document.getElementById('input-buscar-triligue').addEventListener('input', funct
 // =============================================
 document.getElementById('btn-diccionario').addEventListener('click', function() {
     document.getElementById('splash').style.display = 'none';
+	if (window.StatusBar) {
+    StatusBar.styleDefault(); // Fuerza iconos oscuros al cambiar a fondo blanco
+	}
     document.getElementById('enlaces-externos').style.display = 'none';
     document.getElementById('trilingue').style.display = 'none';
     document.getElementById('app').style.display = 'block';
