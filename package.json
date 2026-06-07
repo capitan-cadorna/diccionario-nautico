@@ -25,9 +25,7 @@
     "es6-promise-plugin": "^4.2.2"
   },
   "cordova": {
-    "platforms": [
-      "android"
-    ],
+    "platforms": [],
     "plugins": {
       "cordova-sqlite-storage": {},
       "cordova-plugin-file": {

@@ -25,20 +25,6 @@ document.addEventListener('deviceready', onDeviceReady, false);
 
 function onDeviceReady() {
     
-	setTimeout(() => {
-		// 1. Barra superior (Estado)
-		if (window.StatusBar) {
-			StatusBar.overlaysWebView(false);
-			StatusBar.backgroundColorByHexString('#ffffff');
-			StatusBar.styleDefault(); // Fuerza iconos oscuros (hora, batería, etc.)
-		}
-		// 2. Barra inferior (3 botones de Android)
-		if (window.navigationbar) {
-			navigationbar.backgroundColorByHexString('#ffffff'); // Fondo blanco sólido
-			// Al poner fondo blanco sólido, Android cambia automáticamente los iconos de navegación a oscuros
-		}
-	}, 500);
-
     console.log('🚨 PRUEBA DE FUEGO: EL CÓDIGO NUEVO SÍ ESTÁ AQUÍ 🚨');
     console.log('✅ Dispositivo listo');
     
