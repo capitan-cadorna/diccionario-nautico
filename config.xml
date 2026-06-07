@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="ar.com.diccionario_nautico" version="1.0.24" android-versionCode="10024" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="ar.com.diccionario_nautico" version="1.0.25" android-versionCode="10025" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>Diccionario Náutico</name>
     <description>
         Diccionario Náutico con más de 2000 términos
@@ -34,11 +34,8 @@
 	<preference name="StatusBarStyle" value="default" />
 	
 	<!-- Forzar iconos oscuros en barras de estado y navegación (Android 11+) -->
-	<edit-config file="app/src/main/res/values/themes.xml" mode="merge" target="/resources/style[@name='Theme.App']">
-		<item name="android:windowLightStatusBar">true</item>
-		<item name="android:windowLightNavigationBar">true</item>
-		<item name="android:windowBackground">#FFFFFF</item>
-	</edit-config>
+	<resource-file src="themes.xml" target="app/src/main/res/values/themes.xml" />
+
 </widget>
 
 
