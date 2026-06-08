@@ -492,6 +492,12 @@ document.getElementById('btn-diccionario').addEventListener('click', function() 
 
 document.getElementById('btn-triligue-splash').addEventListener('click', function() {
     document.getElementById('splash').style.display = 'none';
+	setTimeout(() => {
+		if (window.StatusBar) {
+			StatusBar.styleDefault();
+			StatusBar.backgroundColorByHexString('#ffffff');
+		}
+	}, 300);
     document.getElementById('enlaces-externos').style.display = 'none';
     document.getElementById('app').style.display = 'block';
     document.getElementById('busqueda').style.display = 'none';
