@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="ar.com.diccionario_nautico" version="1.0.30" android-versionCode="10030" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="ar.com.diccionario_nautico" version="1.0.32" android-versionCode="10032" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>Diccionario Náutico</name>
     <description>
         Diccionario Náutico con más de 2000 términos
@@ -30,8 +30,6 @@
 	
 	<!-- StatusBar Plugin -->
 	<preference name="StatusBarOverlaysWebView" value="false" />
-	<preference name="StatusBarBackgroundColor" value="#ffffff" />
-	<preference name="StatusBarStyle" value="lightcontent" />
 
 </widget>
 

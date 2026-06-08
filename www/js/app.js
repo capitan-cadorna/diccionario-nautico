@@ -4,7 +4,7 @@
 const CONFIG = {
     dbName: 'diccionario.db',
     versionKey: 'db_version',
-    versionActual: '6.05'
+    versionActual: '6.07'
 };
 
 // =============================================
@@ -476,9 +476,16 @@ document.getElementById('input-buscar-triligue').addEventListener('input', funct
 // =============================================
 document.getElementById('btn-diccionario').addEventListener('click', function() {
     document.getElementById('splash').style.display = 'none';
-	if (window.StatusBar) {
-    StatusBar.styleDefault(); // Fuerza iconos oscuros al cambiar a fondo blanco
-	}
+    setTimeout(() => {
+        if (window.StatusBar) {
+            StatusBar.styleDefault();
+            StatusBar.backgroundColorByHexString('#ffffff');
+        }
+        if (window.navigationbar) {
+            navigationbar.styleDefault();
+            navigationbar.backgroundColorByHexString('#ffffff');
+        }
+    }, 300);
     document.getElementById('enlaces-externos').style.display = 'none';
     document.getElementById('trilingue').style.display = 'none';
     document.getElementById('app').style.display = 'block';
@@ -515,6 +522,16 @@ document.getElementById('btn-triligue-splash').addEventListener('click', functio
 
 document.getElementById('btn-enlaces').addEventListener('click', function() {
     document.getElementById('splash').style.display = 'none';
+    setTimeout(() => {
+        if (window.StatusBar) {
+            StatusBar.styleDefault();
+            StatusBar.backgroundColorByHexString('#ffffff');
+        }
+        if (window.navigationbar) {
+            navigationbar.styleDefault();
+            navigationbar.backgroundColorByHexString('#ffffff');
+        }
+    }, 300);
     document.getElementById('app').style.display = 'none';
     document.getElementById('trilingue').style.display = 'none';
     document.getElementById('enlaces-externos').style.display = 'block';
@@ -578,6 +595,16 @@ asignarMenu('menu-inicio', function() {
     document.getElementById('trilingue').style.display = 'none';
     document.getElementById('splash').style.display = 'flex';
     document.querySelector('#app > header').style.display = 'block';
+    setTimeout(() => {
+        if (window.StatusBar) {
+            StatusBar.styleLightContent(); // Iconos blancos para fondo azul
+            StatusBar.backgroundColorByHexString('#1a4d7a'); // Azul del splash
+        }
+        if (window.navigationbar) {
+            navigationbar.styleLightContent();
+            navigationbar.backgroundColorByHexString('#1a4d7a');
+        }
+    }, 300);
 	document.dispatchEvent(new Event('hide-banner'));
 });
 
@@ -659,9 +686,16 @@ document.querySelectorAll('#volver-al-inicio, #volver-al-splash, #volver-al-inic
         document.getElementById('trilingue').style.display = 'none';
         document.getElementById('splash').style.display = 'flex';
         document.querySelector('#app > header').style.display = 'block';
-        
-        // 👇 AÑADIR ESTA LÍNEA: Ocultar banner al volver al splash
+        setTimeout(() => {
+            if (window.StatusBar) {
+                StatusBar.styleLightContent(); // Iconos blancos para fondo azul
+                StatusBar.backgroundColorByHexString('#1a5276');
+            }
+            if (window.navigationbar) {
+                navigationbar.styleLightContent();
+                navigationbar.backgroundColorByHexString('#1a5276');
+            }
+        }, 300);
         document.dispatchEvent(new Event('hide-banner'));
     });
 });
-
