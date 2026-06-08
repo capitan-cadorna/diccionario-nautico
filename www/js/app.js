@@ -4,7 +4,7 @@
 const CONFIG = {
     dbName: 'diccionario.db',
     versionKey: 'db_version',
-    versionActual: '6.04'
+    versionActual: '6.05'
 };
 
 // =============================================
@@ -494,8 +494,12 @@ document.getElementById('btn-triligue-splash').addEventListener('click', functio
     document.getElementById('splash').style.display = 'none';
 	setTimeout(() => {
 		if (window.StatusBar) {
-			StatusBar.styleDefault();
+			StatusBar.styleDefault(); // Iconos oscuros arriba
 			StatusBar.backgroundColorByHexString('#ffffff');
+		}
+		if (window.navigationbar) {
+			navigationbar.styleDefault(); // Iconos oscuros abajo
+			navigationbar.backgroundColorByHexString('#ffffff');
 		}
 	}, 300);
     document.getElementById('enlaces-externos').style.display = 'none';
