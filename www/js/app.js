@@ -73,6 +73,18 @@ function onDeviceReady() {
     }, 1000);
     // Ocultar banner en el splash screen
     document.dispatchEvent(new Event('hide-banner'));
+	
+	// Forzar tema claro en Android 16+
+	if (window.cordova && cordova.platformId === 'android') {
+		setTimeout(() => {
+			if (window.StatusBar) {
+				StatusBar.styleDefault();
+			}
+			if (window.navigationbar) {
+				navigationbar.styleDefault();
+			}
+		}, 500);
+	}
 }
 
 // =============================================

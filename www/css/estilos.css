@@ -3,7 +3,7 @@
    ============================================= */
 body, html {
     margin: 0;
-    padding: 0;
+    padding: 0!important;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #f4f9fd;
     color: #0b3b4f;
@@ -16,7 +16,10 @@ body, html {
     padding: 15px;
 }
 
-h1, h2, h3 { font-weight: bold!important; }
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Roboto', sans-serif !important;
+    font-weight: 700 !important;
+}
 
 /* =============================================
    SPLASH SCREEN (PANTALLA DE BIENVENIDA)
@@ -137,7 +140,7 @@ h1, h2, h3 { font-weight: bold!important; }
    CABECERA DE LA APP
    ============================================= */
 header {
-    margin: 20px 0 20px 0!important;
+    margin: 0!important;
     text-align: center;
     padding: 15px  !important;
 	background-color: #0a3b5a; 

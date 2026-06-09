@@ -12,11 +12,14 @@ document.addEventListener('deviceready', async function() {
         console.log('✅ [ADMOB.JS] SDK inicializado.');
 
         // 2. Crear banner adaptable
+		// Detectar si es tablet
+		const isTablet = window.innerWidth >= 768;
+
 		window.bannerAd = new admob.BannerAd({
 			adUnitId: 'ca-app-pub-3447093666998031/2796606187',
 			position: 'bottom',
-			size: 'ADAPTIVE_BANNER',
-			offset: 80 // Lo mantiene a salvo por encima de los botones
+			size: isTablet ? 'LEADERBOARD' : 'ADAPTIVE_BANNER', // LEADERBOARD es 728x90 para tablets
+			offset: 80
 		});
 
         // 3. Retrasar la acción inicial para que el WebView mida bien el ancho
