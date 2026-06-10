@@ -140,15 +140,17 @@ h1, h2, h3, h4, h5, h6 {
    CABECERA DE LA APP
    ============================================= */
 header {
-    margin: 0!important;
+    margin: 0 0 15px 0!important;
     text-align: center;
     padding: 15px  !important;
 	background-color: #0a3b5a; 
 	color: white; 
 	border-radius: 8px; 
 	box-sizing: border-box; 
-	position: relative;"
+	position: relative;
+	top: constant(safe-area-inset-top);
 }
+
 
 header h1 {
     font-size: 1.5em;
