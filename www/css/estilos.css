@@ -4,6 +4,7 @@
 body, html {
     margin: 0;
     padding: 0!important;
+	height: 100%;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #f4f9fd;
     color: #0b3b4f;
@@ -13,7 +14,8 @@ body, html {
 #app {
     max-width: 800px;
     margin: 0 auto;
-    padding: 15px;
+    padding-top: env(safe-area-inset-top, 20px);
+    padding-bottom: env(safe-area-inset-bottom, 20px);
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -30,7 +32,8 @@ h1, h2, h3, h4, h5, h6 {
     align-items: center;
     justify-content: center;
     min-height: 100vh;
-    padding: 30px;
+    padding-top: env(safe-area-inset-top, 20px);
+    padding-bottom: env(safe-area-inset-bottom, 20px);
     background: linear-gradient(135deg, #0a3b5a 0%, #1a5276 100%);
     color: white;
     text-align: center;
@@ -418,4 +421,11 @@ header h1 {
 
 .botones-detalle button:hover {
     opacity: 0.7;
+}
+
+/* Estilos para el banner publicitario */
+#ad-container {
+    /* Posicionarlo justo encima de la barra de navegación */
+    bottom: env(safe-area-inset-bottom, 10px) !important;
+    z-index: 9999 !important;
 }

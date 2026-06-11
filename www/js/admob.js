@@ -31,7 +31,7 @@ document.addEventListener('deviceready', async function() {
 		document.addEventListener('show-banner', async () => {
 			if (window.bannerAd) {
 				await window.bannerAd.show();
-				document.body.style.paddingBottom = '90px'; // 50px banner + 40px botones Android
+				document.body.style.paddingBottom = '65px'; // 50px banner + 40px botones Android
 			}
 		});
 

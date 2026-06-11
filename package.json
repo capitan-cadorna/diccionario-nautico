@@ -13,7 +13,7 @@
   "author": "",
   "license": "Apache-2.0",
   "devDependencies": {
-    "cordova-android": "^13.0.0",
+    "cordova-android": "^15.0.0",
     "cordova-plugin-app-version": "^0.1.14",
     "cordova-plugin-dialogs": "^2.0.2",
     "cordova-plugin-file": "^8.1.3",
