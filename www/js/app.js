@@ -4,7 +4,7 @@
 const CONFIG = {
     dbName: 'diccionario.db',
     versionKey: 'db_version',
-    versionActual: '6.12'
+    versionActual: '6.13'
 };
 
 // =============================================
@@ -78,10 +78,12 @@ function onDeviceReady() {
 	if (window.cordova && cordova.platformId === 'android') {
 		setTimeout(() => {
 			if (window.StatusBar) {
-				StatusBar.styleDefault();
+				StatusBar.styleLightContent();
+				StatusBar.backgroundColorByHexString('#0a3b5a');
 			}
 			if (window.navigationbar) {
-				navigationbar.styleDefault();
+				navigationbar.styleLightContent();
+				navigationbar.backgroundColorByHexString('#0a3b5a');
 			}
 		}, 500);
 	}
