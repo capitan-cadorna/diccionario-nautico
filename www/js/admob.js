@@ -1,54 +1,41 @@
-document.addEventListener('deviceready', async function() {
-    console.log('🔍 [ADMOB.JS] Iniciando módulo de publicidad...');
-    
-    if (typeof admob === 'undefined') {
-        console.warn('⚠️ [ADMOB.JS] Plugin no detectado. Se omite carga.');
+document.addEventListener('deviceready', function() {
+    const AdMob = Capacitor.Plugins.AdMob;
+
+    if (!AdMob) {
+        console.error('Plugin AdMob no encontrado');
         return;
     }
 
-    try {
-        await admob.start();
-        console.log('✅ [ADMOB.JS] SDK inicializado.');
+    AdMob.initialize({
+        requestTrackingAuthorization: true,
+        initializeForTesting: false
+    }).catch(function(error) {
+        console.error('Error inicializando AdMob:', error);
+    });
 
-        const isTablet = window.innerWidth >= 768;
-
-        window.bannerAd = new admob.BannerAd({
-            adUnitId: 'ca-app-pub-3447093666998031/2796606187',
-            position: 'bottom',
-            size: isTablet ? 'LEADERBOARD' : 'ADAPTIVE_BANNER',
-            offset: 0  // Sin separación adicional
-        });
-
-        setTimeout(async () => {
-            await window.bannerAd.hide();
-            console.log('✅ [ADMOB.JS] Banner creado y oculto.');
-        }, 500);
-
-        function calcularPaddingBottom() {
-            const safeBottom = parseInt(
-                getComputedStyle(document.documentElement)
-                    .getPropertyValue('env(safe-area-inset-bottom)')
-            ) || 0;
-            return (50 + safeBottom) + 'px';
+    window.mostrarBanner = async function() {
+        try {
+            await AdMob.showBanner({
+                adId: 'ca-app-pub-3447093666998031/2796606187',
+                adSize: 'ADAPTIVE_BANNER',
+                position: 'BOTTOM_CENTER',
+                margin: 0,
+                isTesting: false
+            });
+            console.log('Banner mostrado');
+        } catch (e) {
+            console.error('Error al mostrar banner:', e);
         }
+    };
 
-        document.addEventListener('show-banner', async () => {
-            if (window.bannerAd) {
-                await window.bannerAd.show();
-                document.body.style.paddingBottom = calcularPaddingBottom();
-                console.log('📢 Banner mostrado. Padding: ' + calcularPaddingBottom());
-            }
-        });
+    window.ocultarBanner = async function() {
+        try {
+            await AdMob.removeBanner();
+            console.log('Banner eliminado');
+        } catch (e) {
+            console.error('Error al eliminar banner:', e);
+        }
+    };
 
-        document.addEventListener('hide-banner', async () => {
-            if (window.bannerAd) {
-                await window.bannerAd.hide();
-                document.body.style.paddingBottom = '0px';
-                console.log('🙈 Banner oculto.');
-            }
-        });
-
-    } catch (error) {
-        console.error('❌ [ADMOB.JS] Error crítico:', error);
-    }
-}, false);
+    window.ocultarBanner();
+});

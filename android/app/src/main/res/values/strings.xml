@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Diccionario Náutico</string>
+	<string name="title_activity_main">Diccionario Náutico</string>    
+	<string name="package_name">ar.com.diccionario_nautico</string>
+    <string name="custom_url_scheme">ar.com.diccionario_nautico</string>
+</resources>

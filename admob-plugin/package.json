@@ -1,6 +1,0 @@
-"plugins": {
-    "cordova-sqlite-storage": {},
-    "cordova-plugin-file": {
-        "ANDROIDX_WEBKIT_VERSION": "1.4.0"
-    }
-}

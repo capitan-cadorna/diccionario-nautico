@@ -1,0 +1,16 @@
+{
+  "appId": "ar.com.diccionario_nautico",
+  "appName": "Diccionario Náutico",
+  "webDir": "www",
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 2000,
+      "backgroundColor": "#0a3b5a",
+      "showSpinner": false
+    },
+    "StatusBar": {
+      "style": "DARK",
+      "backgroundColor": "#0a3b5a"
+    }
+  }
+}

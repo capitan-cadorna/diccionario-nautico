@@ -1,23 +1,76 @@
 /* =============================================
    ESTILOS GENERALES
    ============================================= */
-body, html {
-    margin: 0;
-    padding: 0!important;
-	height: 100%;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f4f9fd;
+
+html, body {
+    height: 100% !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    /* Eliminamos cualquier safe-area-inset-bottom que empuje el contenido hacia arriba */
+    padding-bottom: 0 !important; 
+    margin-bottom: 0 !important;
+    background-color: #ffffff;
     color: #0b3b4f;
-    /*box-sizing: border-box;*/
+    overflow-x: hidden;
+	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-#app {
+#app, #enlaces-externos, #trilingue {
+    background-color: #ffffff;
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+#app, #trilingue, #enlaces-externos {
     max-width: 800px;
     margin: 0 auto;
-    padding: 15px;
-    padding-top: calc(15px + env(safe-area-inset-top, 0px));
-    padding-bottom: calc(15px + env(safe-area-inset-bottom, 0px));
+    margin-bottom: 70px !important;
+    padding: 0 !important;
+    box-sizing: border-box;
 }
+
+header, .header {
+    margin: 0 !important;
+    margin-bottom: 15px !important;
+    padding: 15px;
+    padding-top: calc(env(safe-area-inset-top, 0px) + 10px);
+    background-color: #0a3b5a;
+    color: white;
+    width: 100% !important;
+    box-sizing: border-box;
+    display: block;
+}
+
+/* Aplicamos margen de 15px a los bloques de contenido real */
+#busqueda, #resultados, #detalle,
+#trilingue > h2, #trilingue > p, #trilingue > input, #resultado-triligue,
+#enlaces-externos > h2, #enlaces-externos > .categoria-enlaces, #enlaces-externos > .enlace-ext {
+    margin-left: 15px !important;
+    margin-right: 15px !important;
+    width: calc(100% - 30px) !important;
+    box-sizing: border-box;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+/* Reajustamos el padding interno de los inputs para que el texto no toque sus propios bordes */
+.input-triligue, #input-buscar, #input-buscar-detalle {
+    padding: 12px 15px !important;
+}
+
+/* Reajustamos el padding interno de los enlaces externos */
+.enlace-ext {
+    display: block;
+    padding: 12px 15px !important;
+    margin-bottom: 8px;
+}
+
+#resultado-triligue {
+    padding-top: 10px;
+}
+
+/* Elimina cualquier otra regla que mencione 'background-color: #0a3b5a' en el body */
 
 h1, h2, h3, h4, h5, h6 {
     font-family: 'Roboto', sans-serif !important;
@@ -95,12 +148,6 @@ h1, h2, h3, h4, h5, h6 {
 /* =============================================
    PANTALLA DE ENLACES EXTERNOS
    ============================================= */
-#enlaces-externos {
-    min-height: 100vh;
-    background-color: #e8f4f8;
-    padding: 15px;
-}
-
 #enlaces-externos h2 {
     color: #0a3b5a;
     margin-bottom: 20px;
@@ -139,22 +186,6 @@ h1, h2, h3, h4, h5, h6 {
     cursor: pointer;
     margin-bottom: 20px;
 }
-
-/* =============================================
-   CABECERA DE LA APP
-   ============================================= */
-header {
-    margin: 0 0 15px 0!important;
-    text-align: center;
-    padding: 15px  !important;
-	background-color: #0a3b5a; 
-	color: white; 
-	border-radius: 8px; 
-	box-sizing: border-box; 
-	position: relative;
-	top: constant(safe-area-inset-top);
-}
-
 
 header h1 {
     font-size: 1.5em;
@@ -424,25 +455,3 @@ header h1 {
     opacity: 0.7;
 }
 
-/* Estilos para el banner publicitario */
-/* =============================================
-   CORRECCIONES BANNER ADMOB (VERSIÓN FINAL)
-   ============================================= */
-
-#ad-container,
-div[style*="position: fixed"][style*="bottom: 0px"],
-iframe[src*="doubleclick"] {
-    position: fixed !important;
-    bottom: 0 !important;
-    left: 0 !important;
-    width: 100vw !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-    z-index: 9999 !important;
-}
-
-body {
-    padding-bottom: env(safe-area-inset-bottom, 0px);
-}

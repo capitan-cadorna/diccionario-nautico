@@ -2,9 +2,9 @@
 // CONFIGURACIÓN
 // =============================================
 const CONFIG = {
-    dbName: 'diccionario.db',
+    dbName: 'diccionario',
     versionKey: 'db_version',
-    versionActual: '6.13'
+    versionActual: '6.42'
 };
 
 // =============================================
@@ -14,205 +14,184 @@ let db = null;
 let historial = [];
 
 // =============================================
-// ADMOB
+// FUNCIÓN AUXILIAR PARA AMBAS BARRAS
 // =============================================
-let bannerAd = null;
+async function configurarBarras(estiloStatus, colorStatus, colorNav, estiloNav) {
+    const StatusBar = Capacitor.Plugins.StatusBar;
+    const NavigationBar = Capacitor.Plugins.NavigationBar;
+
+    // Sincronizamos el fondo del body con el de la barra
+    document.body.style.backgroundColor = colorStatus;
+
+    if (StatusBar) {
+        await StatusBar.setOverlaysWebView({ overlay: false });
+        await StatusBar.setStyle({ style: estiloStatus });
+        await StatusBar.setBackgroundColor({ color: colorStatus });
+    }
+
+    if (NavigationBar) {
+        try {
+            await NavigationBar.setBackgroundColor({ color: colorNav });
+            await NavigationBar.setBarStyle({ style: estiloNav });
+        } catch (e) {
+            console.warn('No se pudo configurar barra de navegación:', e);
+        }
+    }
+}
 
 // =============================================
-// INICIALIZACIÓN
+// INICIALIZACIÓN (sql.js + barras)
 // =============================================
-document.addEventListener('deviceready', onDeviceReady, false);
+document.addEventListener('deviceready', async () => {
+    console.log('✅ Dispositivo listo (deviceready)');
 
-function onDeviceReady() {
-    
-    console.log('🚨 PRUEBA DE FUEGO: EL CÓDIGO NUEVO SÍ ESTÁ AQUÍ 🚨');
-    console.log('✅ Dispositivo listo');
-    
-    db = window.sqlitePlugin.openDatabase({
-        name: CONFIG.dbName,
-        location: 'default'
-    });
-    
-    crearTabla();
-    configurarUI();
-    verificarYActualizar();
-    
-    // Mostrar fecha en splash
+    // Splash: iconos blancos, fondo azul (ambas barras)
+    await configurarBarras('DARK', '#0a3b5a', '#0a3b5a', 'DARK');
+
+    try {
+        const SQL = await initSqlJs({
+            locateFile: file => `js/${file}`
+        });
+        const savedDb = localStorage.getItem('diccionario_db');
+        if (savedDb) {
+            const arr = JSON.parse(savedDb);
+            db = new SQL.Database(new Uint8Array(arr));
+            console.log('✅ BD cargada desde almacenamiento');
+        } else {
+            db = new SQL.Database();
+            console.log('✅ Nueva BD creada');
+        }
+        crearTabla();
+        configurarUI();
+        verificarYActualizar();
+        mostrarInformacionSplash();
+
+        // Guardar periódicamente
+        setInterval(() => {
+            const data = db.export();
+            localStorage.setItem('diccionario_db', JSON.stringify(Array.from(data)));
+        }, 30000);
+    } catch (error) {
+        console.error('❌ Error inicializando BD:', error);
+        alert('Error al abrir la base de datos: ' + error.message);
+    }
+}, false);
+
+function guardarBD() {
+    if (db) {
+        const data = db.export();
+        localStorage.setItem('diccionario_db', JSON.stringify(Array.from(data)));
+    }
+}
+
+function mostrarInformacionSplash() {
     var fecha = localStorage.getItem('diccionario_fecha') || '';
     var fechaElem = document.getElementById('fecha-actualizacion-splash');
     if (fechaElem && fecha) {
         fechaElem.textContent = '📅 Actualizado: ' + fecha;
     }
 
-    function actualizarContadorSplash() {
-        setTimeout(function() {
-            db.executeSql(
-                'SELECT COUNT(*) as total FROM terminos',
-                [],
-                function(rs) {
-                    var total = rs.rows.item(0).total;
-                    console.log('📊 Total términos en BD: ' + total);
-                    
-                    var splashSubtitulo = document.querySelector('.splash-subtitulo');
-                    if (splashSubtitulo) {
-                        splashSubtitulo.textContent = total + ' términos náuticos en tu bolsillo';
-                        console.log('✅ Texto del splash actualizado');
-                    } else {
-                        console.warn('⚠️ No se encontró .splash-subtitulo');
-                    }
-                },
-                function(error) {
-                    console.error('Error al contar términos:', error);
-                }
-            );
-        }, 500);
-    }
-
-    setTimeout(function() {
-        actualizarContadorSplash();
+    setTimeout(() => {
+        const result = db.exec('SELECT COUNT(*) as total FROM terminos');
+        if (result.length > 0) {
+            const total = result[0].values[0][0];
+            console.log('📊 Total términos en BD: ' + total);
+            var splashSubtitulo = document.querySelector('.splash-subtitulo');
+            if (splashSubtitulo) {
+                splashSubtitulo.textContent = total + ' términos náuticos en tu bolsillo';
+            }
+        }
     }, 1000);
-    // Ocultar banner en el splash screen
-    document.dispatchEvent(new Event('hide-banner'));
-	
-	// Forzar tema claro en Android 16+
-	if (window.cordova && cordova.platformId === 'android') {
-		setTimeout(() => {
-			if (window.StatusBar) {
-				StatusBar.styleLightContent();
-				StatusBar.backgroundColorByHexString('#0a3b5a');
-			}
-			if (window.navigationbar) {
-				navigationbar.styleLightContent();
-				navigationbar.backgroundColorByHexString('#0a3b5a');
-			}
-		}, 500);
-	}
+
+    // Ocultar banner en el splash (función global definida en admob.js)
+    if (window.ocultarBanner) window.ocultarBanner();
 }
 
 // =============================================
-// BASE DE DATOS
+// BASE DE DATOS (sql.js)
 // =============================================
 function crearTabla() {
-    db.executeSql(
-        'CREATE TABLE IF NOT EXISTS terminos (id INTEGER PRIMARY KEY AUTOINCREMENT, titulo TEXT, definicion TEXT, categoria TEXT)',
-        [],
-        function() { console.log('✅ Tabla lista'); },
-        function(error) { console.error('❌ Error tabla:', error); }
-    );
+    db.run('CREATE TABLE IF NOT EXISTS terminos (id INTEGER PRIMARY KEY AUTOINCREMENT, titulo TEXT, definicion TEXT, categoria TEXT)');
+    console.log('✅ Tabla lista');
 }
 
 function insertarTerminos(terminos, callback) {
+    db.run('DELETE FROM terminos');
+    const stmt = db.prepare('INSERT INTO terminos (titulo, definicion, categoria) VALUES (?, ?, ?)');
     let insertados = 0;
-    db.transaction(function(tx) {
-        tx.executeSql('DELETE FROM terminos');
-        terminos.forEach(function(t) {
-            tx.executeSql(
-                'INSERT INTO terminos (titulo, definicion, categoria) VALUES (?, ?, ?)',
-                [t.titulo, t.definicion, t.categoria || 'general'],
-                function() { insertados++; },
-                function(tx, error) { console.error('❌ Insert:', error.message); }
-            );
-        });
-    }, function(error) {
-        console.error('❌ Transacción:', error);
-    }, function() {
-        console.log('✅ ' + insertados + ' términos guardados');
-        localStorage.setItem(CONFIG.versionKey, CONFIG.versionActual);
-        if (callback) callback(insertados);
+    terminos.forEach(t => {
+        stmt.run([t.titulo, t.definicion, t.categoria || 'general']);
+        insertados++;
     });
+    stmt.free();
+    guardarBD();
+    console.log('✅ ' + insertados + ' términos guardados');
+    localStorage.setItem(CONFIG.versionKey, CONFIG.versionActual);
+    if (callback) callback(insertados);
 }
 
 function buscarTerminos(texto, callback) {
     const busqueda = '%' + texto.toLowerCase() + '%';
-    db.executeSql(
-        'SELECT * FROM terminos WHERE LOWER(titulo) LIKE ? ORDER BY titulo ASC LIMIT 50',
-        [busqueda],
-        function(rs) {
-            const resultados = [];
-            for (let i = 0; i < rs.rows.length; i++) {
-                resultados.push(rs.rows.item(i));
-            }
-            callback(resultados);
-        },
-        function(error) { console.error('❌ Búsqueda:', error); callback([]); }
-    );
+    const results = db.exec('SELECT * FROM terminos WHERE LOWER(titulo) LIKE ? ORDER BY titulo ASC LIMIT 50', [busqueda]);
+    const resultados = [];
+    if (results.length > 0 && results[0].values) {
+        results[0].values.forEach(row => {
+            resultados.push({ id: row[0], titulo: row[1], definicion: row[2], categoria: row[3] });
+        });
+    }
+    callback(resultados);
 }
 
 function buscarTerminoExacto(texto, callback) {
-    var busqueda = texto.toLowerCase().trim();
-    
-    // 1. Buscar exacto (con tilde, tal cual viene del marcador)
-    db.executeSql(
-        'SELECT * FROM terminos WHERE LOWER(titulo) = ? LIMIT 1',
-        [busqueda],
-        function(rs) {
-            if (rs.rows.length > 0) {
-                callback(rs.rows.item(0));
+    // 1. Limpiamos el texto: minúsculas, quitamos espacios extra y reemplazamos guiones por espacios
+    var busqueda = texto.toLowerCase().trim().replace(/-/g, ' ');
+
+    // 2. Intento de búsqueda exacta
+    const results = db.exec('SELECT * FROM terminos WHERE LOWER(titulo) = ? LIMIT 1', [busqueda]);
+    if (results.length > 0 && results[0].values.length > 0) {
+        const row = results[0].values[0];
+        callback({ id: row[0], titulo: row[1], definicion: row[2], categoria: row[3] });
+        return;
+    }
+
+    // 3. Intento de búsqueda sin acentos (más flexible)
+    var busquedaSinAcentos = quitarAcentos(busqueda);
+    const all = db.exec('SELECT * FROM terminos');
+    if (all.length > 0) {
+        const valores = all[0].values;
+
+        // Buscamos coincidencia exacta ignorando acentos
+        for (let i = 0; i < valores.length; i++) {
+            var term = valores[i];
+            var tituloSinAcentos = quitarAcentos(term[1].toLowerCase());
+            if (tituloSinAcentos === busquedaSinAcentos) {
+                callback({ id: term[0], titulo: term[1], definicion: term[2], categoria: term[3] });
                 return;
             }
-            
-            // 2. Buscar sin acentos (el slug no lleva tilde pero el título sí)
-            // Reemplazamos letras con tilde por sin tilde en ambos lados
-            var busquedaSinAcentos = quitarAcentos(busqueda);
-            
-            // Crear una consulta que compare ignorando acentos
-            db.executeSql(
-                'SELECT * FROM terminos ORDER BY LOWER(titulo) ASC',
-                [],
-                function(rsTodos) {
-                    // Buscar manualmente comparando sin acentos
-                    for (var i = 0; i < rsTodos.rows.length; i++) {
-                        var term = rsTodos.rows.item(i);
-                        var tituloSinAcentos = quitarAcentos(term.titulo.toLowerCase());
-                        if (tituloSinAcentos === busquedaSinAcentos) {
-                            callback(term);
-                            return;
-                        }
-                    }
-                    
-                    // 3. Si no encuentra, buscar por raíz sin acentos
-                    var raiz = busquedaSinAcentos.substring(0, Math.min(6, busquedaSinAcentos.length));
-                    for (var j = 0; j < rsTodos.rows.length; j++) {
-                        var term2 = rsTodos.rows.item(j);
-                        var tituloSinAcentos2 = quitarAcentos(term2.titulo.toLowerCase());
-                        if (tituloSinAcentos2.indexOf(raiz) === 0) {
-                            callback(term2);
-                            return;
-                        }
-                    }
-                    
-                    // 4. Último recurso: LIKE genérico
-                    buscarTerminos(busqueda, function(resultados) {
-                        if (resultados.length > 0) {
-                            callback(resultados[0]);
-                        } else {
-                            callback(null);
-                        }
-                    });
-                },
-                function() {
-                    callback(null);
-                }
-            );
-        },
-        function(error) {
-            console.error('Error en búsqueda exacta:', error);
-            callback(null);
         }
-    );
+
+        // Si aún no se encuentra, intentamos con una búsqueda parcial (empezando por...)
+        var raiz = busquedaSinAcentos.substring(0, Math.min(6, busquedaSinAcentos.length));
+        for (let j = 0; j < valores.length; j++) {
+            var term2 = valores[j];
+            var tituloSinAcentos2 = quitarAcentos(term2[1].toLowerCase());
+            if (tituloSinAcentos2.indexOf(raiz) === 0) {
+                callback({ id: term2[0], titulo: term2[1], definicion: term2[2], categoria: term2[3] });
+                return;
+            }
+        }
+    }
+
+    // 4. Último recurso: búsqueda LIKE general
+    buscarTerminos(busqueda, function(resultados) {
+        if (resultados.length > 0) callback(resultados[0]);
+        else callback(null);
+    });
 }
 
-// Función auxiliar para quitar acentos
 function quitarAcentos(texto) {
-    var mapa = {
-        'á': 'a', 'é': 'e', 'í': 'i', 'ó': 'o', 'ú': 'u',
-        'à': 'a', 'è': 'e', 'ì': 'i', 'ò': 'o', 'ù': 'u',
-        'ä': 'a', 'ë': 'e', 'ï': 'i', 'ö': 'o', 'ü': 'u',
-        'â': 'a', 'ê': 'e', 'î': 'i', 'ô': 'o', 'û': 'u'
-    };
-    return texto.replace(/[áéíóúàèìòùäëïöüâêîôû]/g, function(letra) {
-        return mapa[letra] || letra;
-    });
+    var mapa = { 'á': 'a', 'é': 'e', 'í': 'i', 'ó': 'o', 'ú': 'u', 'à': 'a', 'è': 'e', 'ì': 'i', 'ò': 'o', 'ù': 'u', 'ä': 'a', 'ë': 'e', 'ï': 'i', 'ö': 'o', 'ü': 'u', 'â': 'a', 'ê': 'e', 'î': 'i', 'ô': 'o', 'û': 'u' };
+    return texto.replace(/[áéíóúàèìòùäëïöüâêîôû]/g, letra => mapa[letra] || letra);
 }
 
 // =============================================
@@ -221,46 +200,30 @@ function quitarAcentos(texto) {
 function verificarYActualizar() {
     var versionLocal = localStorage.getItem(CONFIG.versionKey) || '0';
     var fechaLocal = localStorage.getItem('diccionario_fecha') || '';
-    
-    // Mostrar fecha en el splash
+
     var splashFecha = document.getElementById('fecha-actualizacion-splash');
     if (splashFecha) {
-        if (!fechaLocal || fechaLocal === '0') {
-            splashFecha.textContent = '📅 Diccionario precargado';
-        } else {
-            splashFecha.textContent = '📅 Actualizado: ' + fechaLocal;
-        }
+        splashFecha.textContent = (!fechaLocal || fechaLocal === '0') ? '📅 Diccionario precargado' : '📅 Actualizado: ' + fechaLocal;
     }
-    
-    // Mostrar fecha en el header de la app
     var fechaElem = document.getElementById('fecha-actualizacion');
     if (fechaElem) {
-        if (!fechaLocal || fechaLocal === '0') {
-            fechaElem.textContent = '📅 Diccionario precargado';
-        } else {
-            fechaElem.textContent = '📅 Actualizado: ' + fechaLocal;
-        }
+        fechaElem.textContent = (!fechaLocal || fechaLocal === '0') ? '📅 Diccionario precargado' : '📅 Actualizado: ' + fechaLocal;
     }
-    
-    // Cargar datos si es primera vez o versión desactualizada
+
     if (versionLocal !== CONFIG.versionActual) {
         fetch('js/diccionario_data.json')
-            .then(function(response) { return response.json(); })
-            .then(function(data) {
+            .then(response => response.json())
+            .then(data => {
                 insertarTerminos(data, function(total) {
                     var fechaHoy = new Date().toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
                     localStorage.setItem(CONFIG.versionKey, CONFIG.versionActual);
                     localStorage.setItem('diccionario_fecha', fechaHoy);
-                    
-                    // Actualizar textos de fecha
                     if (splashFecha) splashFecha.textContent = '📅 Actualizado: ' + fechaHoy;
                     if (fechaElem) fechaElem.textContent = '📅 Actualizado: ' + fechaHoy;
-					actualizarContadorSplash();
+                    mostrarInformacionSplash();
                 });
             })
-            .catch(function(error) {
-                console.error('❌ Error al cargar JSON:', error);
-            });
+            .catch(error => console.error('❌ Error al cargar JSON:', error));
     }
 }
 
@@ -268,16 +231,8 @@ function verificarYActualizar() {
 // INTERFAZ
 // =============================================
 function formatearDefinicion(texto) {
-    // Convertir marcadores WEB:url|texto en enlaces externos
-    texto = texto.replace(/\[\[WEB:([^|]+)\|([^\]]+)\]\]/g, function(match, url, term) {
-        return '<span class="enlace-web" data-url="' + url + '">' + term + '</span>';
-    });
-    
-    // Convertir marcadores [[slug|texto visible]] en spans interactivos
-    texto = texto.replace(/\[\[([^|]+)\|([^\]]+)\]\]/g, function(match, slug, term) {
-        return '<span class="enlace-term" data-term="' + slug + '">' + term + '</span>';
-    });
-    
+    texto = texto.replace(/\[\[WEB:([^|]+)\|([^\]]+)\]\]/g, (m, url, term) => '<span class="enlace-web" data-url="' + url + '">' + term + '</span>');
+    texto = texto.replace(/\[\[([^|]+)\|([^\]]+)\]\]/g, (m, slug, term) => '<span class="enlace-term" data-term="' + slug + '">' + term + '</span>');
     return texto;
 }
 
@@ -291,33 +246,30 @@ function mostrarDetalle(term, guardarEnHistorial) {
             });
         }
     }
-    
+
     document.getElementById('busqueda').style.display = 'none';
     document.getElementById('resultados').style.display = 'none';
     document.getElementById('detalle').style.display = 'block';
     document.getElementById('detalle-titulo').textContent = term.titulo;
     document.getElementById('detalle-definicion').innerHTML = formatearDefinicion(term.definicion);
-    
+
     var enlaces = document.querySelectorAll('#detalle-definicion .enlace-term');
     for (var i = 0; i < enlaces.length; i++) {
         enlaces[i].addEventListener('click', function() {
             var terminoBuscado = this.getAttribute('data-term');
             buscarTerminoExacto(terminoBuscado, function(termEncontrado) {
-                if (termEncontrado) {
-                    mostrarDetalle(termEncontrado);
-                } else {
-                    alert('Término no encontrado: ' + terminoBuscado);
-                }
+                if (termEncontrado) mostrarDetalle(termEncontrado);
+                else alert('Término no encontrado: ' + terminoBuscado);
             });
         });
     }
-    
+
     var enlacesWeb = document.querySelectorAll('#detalle-definicion .enlace-web');
     for (var j = 0; j < enlacesWeb.length; j++) {
         enlacesWeb[j].addEventListener('click', function() {
             var url = this.getAttribute('data-url');
-            if (typeof cordova !== 'undefined' && cordova.InAppBrowser) {
-                cordova.InAppBrowser.open(url, '_system');
+            if (Capacitor.Plugins.Browser) {
+                Capacitor.Plugins.Browser.open({ url: url });
             } else {
                 window.open(url, '_blank');
             }
@@ -326,7 +278,24 @@ function mostrarDetalle(term, guardarEnHistorial) {
 }
 
 function configurarUI() {
-    // Buscador principal
+    // Ocultar banner al enfocar cualquier input y mostrarlo al salir
+    const inputs = document.querySelectorAll('input');
+    inputs.forEach(input => {
+        input.addEventListener('focus', () => {
+            if (window.ocultarBanner) window.ocultarBanner();
+        });
+        input.addEventListener('blur', () => {
+            // Pequeño retardo para evitar parpadeos si se cambia de un input a otro
+            setTimeout(() => {
+                if (document.activeElement.tagName !== 'INPUT') {
+                    if (document.getElementById('splash').style.display === 'none') {
+                        if (window.mostrarBanner) window.mostrarBanner();
+                    }
+                }
+            }, 300);
+        });
+    });
+
     document.getElementById('input-buscar').addEventListener('input', function() {
         const texto = this.value.trim();
         if (texto.length < 2) {
@@ -355,14 +324,13 @@ function configurarUI() {
             });
         });
     });
-    
-    // Botón Volver
+
     document.getElementById('btn-volver').addEventListener('click', function() {
         if (historial.length > 0) {
             var terminoAnterior = historial.pop();
             document.getElementById('detalle-titulo').textContent = terminoAnterior.titulo;
             document.getElementById('detalle-definicion').innerHTML = terminoAnterior.definicion;
-            
+
             var enlaces = document.querySelectorAll('#detalle-definicion .enlace-term');
             for (var i = 0; i < enlaces.length; i++) {
                 enlaces[i].addEventListener('click', function() {
@@ -379,8 +347,7 @@ function configurarUI() {
             document.getElementById('resultados').style.display = 'block';
         }
     });
-    
-    // Botón Home
+
     document.getElementById('btn-home').addEventListener('click', function() {
         historial = [];
         document.getElementById('detalle').style.display = 'none';
@@ -390,20 +357,19 @@ function configurarUI() {
         document.getElementById('input-buscar-detalle').value = '';
         document.getElementById('lista-resultados').innerHTML = '<li><em>Escribe algo en el buscador...</em></li>';
     });
-    
-    // Buscador en detalle
+
     document.getElementById('input-buscar-detalle').addEventListener('input', function() {
         const texto = this.value.trim();
         var listaAnterior = document.getElementById('sugerencias-detalle');
         if (listaAnterior) listaAnterior.remove();
         if (texto.length < 2) return;
-        
+
         buscarTerminos(texto, function(resultados) {
             if (resultados.length === 0) return;
             var lista = document.createElement('ul');
             lista.id = 'sugerencias-detalle';
             lista.style.cssText = 'position:absolute; top:100%; left:0; right:0; background:white; border:1px solid #ccc; border-radius:8px; list-style:none; padding:0; margin:5px 0 0 0; max-height:200px; overflow-y:auto; z-index:9999; box-shadow:0 4px 8px rgba(0,0,0,0.1);';
-            
+
             resultados.forEach(function(term) {
                 var li = document.createElement('li');
                 li.textContent = term.titulo;
@@ -415,20 +381,20 @@ function configurarUI() {
                 });
                 lista.appendChild(li);
             });
-            
+
             var inputDetalle = document.getElementById('input-buscar-detalle');
             inputDetalle.parentNode.style.position = 'relative';
             inputDetalle.parentNode.appendChild(lista);
         });
     });
-    
+
     document.addEventListener('click', function(e) {
         if (e.target.id !== 'input-buscar-detalle') {
             var lista = document.getElementById('sugerencias-detalle');
             if (lista) lista.remove();
         }
     });
-}   
+}
 
 // =============================================
 // DICCIONARIO TRILINGÜE
@@ -490,90 +456,56 @@ document.getElementById('input-buscar-triligue').addEventListener('input', funct
 // =============================================
 document.getElementById('btn-diccionario').addEventListener('click', function() {
     document.getElementById('splash').style.display = 'none';
-    setTimeout(() => {
-        if (window.StatusBar) {
-            StatusBar.styleDefault();
-            StatusBar.backgroundColorByHexString('#ffffff');
-        }
-        if (window.navigationbar) {
-            navigationbar.styleDefault();
-            navigationbar.backgroundColorByHexString('#ffffff');
-        }
-    }, 300);
+    configurarBarras('DARK', '#0a3b5a', '#0a3b5a', 'DARK');
     document.getElementById('enlaces-externos').style.display = 'none';
     document.getElementById('trilingue').style.display = 'none';
     document.getElementById('app').style.display = 'block';
     document.getElementById('busqueda').style.display = 'block';
     document.getElementById('resultados').style.display = 'block';
     document.getElementById('detalle').style.display = 'none';
-	document.querySelector('#app > header').style.display = 'block';
-	// Mostrar banner al entrar al diccionario
-    document.dispatchEvent(new Event('show-banner'));
+    document.querySelector('#app > header').style.display = 'block';
+    if (window.mostrarBanner) window.mostrarBanner();
 });
 
 document.getElementById('btn-triligue-splash').addEventListener('click', function() {
     document.getElementById('splash').style.display = 'none';
-	setTimeout(() => {
-		if (window.StatusBar) {
-			StatusBar.styleDefault(); // Iconos oscuros arriba
-			StatusBar.backgroundColorByHexString('#ffffff');
-		}
-		if (window.navigationbar) {
-			navigationbar.styleDefault(); // Iconos oscuros abajo
-			navigationbar.backgroundColorByHexString('#ffffff');
-		}
-	}, 300);
+    configurarBarras('DARK', '#0a3b5a', '#0a3b5a', 'DARK');
     document.getElementById('enlaces-externos').style.display = 'none';
     document.getElementById('app').style.display = 'block';
     document.getElementById('busqueda').style.display = 'none';
     document.getElementById('resultados').style.display = 'none';
     document.getElementById('detalle').style.display = 'none';
     document.getElementById('trilingue').style.display = 'block';
-	document.querySelector('#app > header').style.display = 'none';
-    // Mostrar banner al entrar al trilingüe
-    document.dispatchEvent(new Event('show-banner'));
+    document.querySelector('#app > header').style.display = 'none';
+    if (window.mostrarBanner) window.mostrarBanner();
 });
 
 document.getElementById('btn-enlaces').addEventListener('click', function() {
     document.getElementById('splash').style.display = 'none';
-    setTimeout(() => {
-        if (window.StatusBar) {
-            StatusBar.styleDefault();
-            StatusBar.backgroundColorByHexString('#ffffff');
-        }
-        if (window.navigationbar) {
-            navigationbar.styleDefault();
-            navigationbar.backgroundColorByHexString('#ffffff');
-        }
-    }, 300);
+    configurarBarras('DARK', '#0a3b5a', '#0a3b5a', 'DARK');
     document.getElementById('app').style.display = 'none';
     document.getElementById('trilingue').style.display = 'none';
     document.getElementById('enlaces-externos').style.display = 'block';
-    // Mostrar banner al entrar a enlaces
-    document.dispatchEvent(new Event('show-banner'));
+    if (window.mostrarBanner) window.mostrarBanner();
 });
 
-// Enlaces externos: abrir en navegador
 document.querySelectorAll('.enlace-ext').forEach(function(enlace) {
     enlace.addEventListener('click', function(e) {
         e.preventDefault();
         var url = this.getAttribute('href');
-        if (typeof cordova !== 'undefined' && cordova.InAppBrowser) {
-            cordova.InAppBrowser.open(url, '_system');
+        if (Capacitor.Plugins.Browser) {
+            Capacitor.Plugins.Browser.open({ url: url });
         } else {
             window.open(url, '_blank');
         }
     });
 });
 
-// Cargar trilingüe al iniciar
 cargarDiccionarioTrilingue();
 
 // =============================================
-// MENÚ HAMBURGUESA (compatible con IDs duplicados)
+// MENÚ HAMBURGUESA
 // =============================================
-
-// Abrir/cerrar menú al pulsar ☰ en cualquier sección
 document.addEventListener('click', function(e) {
     if (e.target.closest('#btn-menu')) {
         e.stopPropagation();
@@ -583,13 +515,11 @@ document.addEventListener('click', function(e) {
         }
         return;
     }
-    // Cerrar todos los menús al hacer clic fuera
     document.querySelectorAll('#menu-desplegable').forEach(function(m) {
         m.style.display = 'none';
     });
 });
 
-// Función para asignar eventos a elementos con IDs duplicados
 function asignarMenu(id, accion) {
     document.querySelectorAll('#' + id).forEach(function(el) {
         el.addEventListener('click', function(e) {
@@ -602,24 +532,15 @@ function asignarMenu(id, accion) {
     });
 }
 
-// 🏠 Inicio
+// 🏠 Inicio (volver al splash)
 asignarMenu('menu-inicio', function() {
     document.getElementById('app').style.display = 'none';
     document.getElementById('enlaces-externos').style.display = 'none';
     document.getElementById('trilingue').style.display = 'none';
     document.getElementById('splash').style.display = 'flex';
     document.querySelector('#app > header').style.display = 'block';
-    setTimeout(() => {
-        if (window.StatusBar) {
-            StatusBar.styleLightContent(); // Iconos blancos para fondo azul
-            StatusBar.backgroundColorByHexString('#1a4d7a'); // Azul del splash
-        }
-        if (window.navigationbar) {
-            navigationbar.styleLightContent();
-            navigationbar.backgroundColorByHexString('#1a4d7a');
-        }
-    }, 300);
-	document.dispatchEvent(new Event('hide-banner'));
+    configurarBarras('DARK', '#0a3b5a', '#0a3b5a', 'DARK');
+    if (window.ocultarBanner) window.ocultarBanner();
 });
 
 // 📖 Diccionario Náutico
@@ -632,7 +553,8 @@ asignarMenu('menu-diccionario', function() {
     document.getElementById('resultados').style.display = 'block';
     document.getElementById('detalle').style.display = 'none';
     document.querySelector('#app > header').style.display = 'block';
-	document.dispatchEvent(new Event('show-banner'));
+    configurarBarras('DARK', '#0a3b5a', '#0a3b5a', 'DARK');
+    if (window.mostrarBanner) window.mostrarBanner();
 });
 
 // 🌍 Diccionario Trilingüe
@@ -645,7 +567,8 @@ asignarMenu('menu-triligue', function() {
     document.getElementById('detalle').style.display = 'none';
     document.getElementById('trilingue').style.display = 'block';
     document.querySelector('#app > header').style.display = 'none';
-	document.dispatchEvent(new Event('show-banner'));
+    configurarBarras('DARK', '#0a3b5a', '#0a3b5a', 'DARK');
+    if (window.mostrarBanner) window.mostrarBanner();
 });
 
 // 🔗 Enlaces Externos
@@ -654,15 +577,20 @@ asignarMenu('menu-enlaces', function() {
     document.getElementById('app').style.display = 'none';
     document.getElementById('trilingue').style.display = 'none';
     document.getElementById('enlaces-externos').style.display = 'block';
-	document.dispatchEvent(new Event('show-banner'));
+    configurarBarras('DARK', '#0a3b5a', '#0a3b5a', 'DARK');
+    if (window.mostrarBanner) window.mostrarBanner();
 });
 
 // 📤 Compartir app
 asignarMenu('menu-compartir', function() {
     var mensaje = 'Descubre el Diccionario Náutico. Más de 2.000 términos sin conexión. ¡Descárgala gratis! ⚓';
     var enlace = 'https://play.google.com/store/apps/details?id=ar.com.diccionario_nautico';
-    if (typeof window.plugins !== 'undefined' && window.plugins.socialsharing !== 'undefined') {
-        window.plugins.socialsharing.share(mensaje, 'Diccionario Náutico', null, enlace);
+    if (Capacitor.Plugins.Share) {
+        Capacitor.Plugins.Share.share({
+            title: 'Diccionario Náutico',
+            text: mensaje,
+            url: enlace
+        });
     } else {
         alert('📤 ' + mensaje + '\n\n' + enlace);
     }
@@ -670,21 +598,23 @@ asignarMenu('menu-compartir', function() {
 
 // ℹ️ Acerca de
 asignarMenu('menu-acerca', function() {
-    let mensaje = '⚓ Diccionario Náutico\n\nCargando versión...';
-    
-    // Intentamos leer la versión automáticamente desde config.xml
-    if (navigator.notification && window.cordova && cordova.getAppVersion) {
-        cordova.getAppVersion.getVersionNumber().then(function(version) {
-            mensaje = '⚓ Diccionario Náutico\n\nVersión: ' + version + 
-                      '\n\nDesarrollado por Nautiapps\ndiccionario-nautico.com.ar\n\n© ' + new Date().getFullYear();
-            
-            navigator.notification.alert(mensaje, null, 'Acerca de', 'Cerrar');
+    if (Capacitor.Plugins.App) {
+        Capacitor.Plugins.App.getInfo().then(function(info) {
+            var mensaje = '⚓ Diccionario Náutico\n\nVersión: ' + info.version +
+                          '\n\nDesarrollado por Nautiapps\ndiccionario-nautico.com.ar\n\n© ' + new Date().getFullYear();
+            if (Capacitor.Plugins.Dialog) {
+                Capacitor.Plugins.Dialog.alert({
+                    title: 'Acerca de',
+                    message: mensaje,
+                    buttonTitle: 'Cerrar'
+                });
+            } else {
+                alert(mensaje);
+            }
         }).catch(function() {
-            // Respaldo por si falla la lectura
-            navigator.notification.alert('⚓ Diccionario Náutico\n\nVersión: 1.0.8\n\nDesarrollado por Nautiapps\ndiccionario-nautico.com.ar', null, 'Acerca de', 'Cerrar');
+            alert('⚓ Diccionario Náutico\n\nVersión: 1.0.8\n\nDesarrollado por Nautiapps\ndiccionario-nautico.com.ar');
         });
     } else {
-        // Respaldo si no está en dispositivo
         alert('⚓ Diccionario Náutico\n\nVersión: 1.0.8\n\nDesarrollado por Nautiapps\ndiccionario-nautico.com.ar');
     }
 });
@@ -700,16 +630,7 @@ document.querySelectorAll('#volver-al-inicio, #volver-al-splash, #volver-al-inic
         document.getElementById('trilingue').style.display = 'none';
         document.getElementById('splash').style.display = 'flex';
         document.querySelector('#app > header').style.display = 'block';
-        setTimeout(() => {
-            if (window.StatusBar) {
-                StatusBar.styleLightContent(); // Iconos blancos para fondo azul
-                StatusBar.backgroundColorByHexString('#1a5276');
-            }
-            if (window.navigationbar) {
-                navigationbar.styleLightContent();
-                navigationbar.backgroundColorByHexString('#1a5276');
-            }
-        }, 300);
-        document.dispatchEvent(new Event('hide-banner'));
+        configurarBarras('DARK', '#0a3b5a', '#0a3b5a', 'DARK');
+        if (window.ocultarBanner) window.ocultarBanner();
     });
 });
