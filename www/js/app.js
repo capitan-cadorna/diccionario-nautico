@@ -4,7 +4,7 @@
 const CONFIG = {
     dbName: 'diccionario',
     versionKey: 'db_version',
-    versionActual: '6.42'
+    versionActual: '6.43'
 };
 
 // =============================================
@@ -111,16 +111,17 @@ function mostrarInformacionSplash() {
 // BASE DE DATOS (sql.js)
 // =============================================
 function crearTabla() {
-    db.run('CREATE TABLE IF NOT EXISTS terminos (id INTEGER PRIMARY KEY AUTOINCREMENT, titulo TEXT, definicion TEXT, categoria TEXT)');
+    db.run('CREATE TABLE IF NOT EXISTS terminos (id INTEGER PRIMARY KEY AUTOINCREMENT, titulo TEXT, definicion TEXT, categoria TEXT, titulo_busqueda TEXT)');
     console.log('✅ Tabla lista');
 }
 
 function insertarTerminos(terminos, callback) {
-    db.run('DELETE FROM terminos');
-    const stmt = db.prepare('INSERT INTO terminos (titulo, definicion, categoria) VALUES (?, ?, ?)');
+    db.run('DROP TABLE IF EXISTS terminos');
+    crearTabla();
+    const stmt = db.prepare('INSERT INTO terminos (titulo, definicion, categoria, titulo_busqueda) VALUES (?, ?, ?, ?)');
     let insertados = 0;
     terminos.forEach(t => {
-        stmt.run([t.titulo, t.definicion, t.categoria || 'general']);
+        stmt.run([t.titulo, t.definicion, t.categoria || 'general', quitarAcentos(t.titulo.toLowerCase())]);
         insertados++;
     });
     stmt.free();
@@ -131,8 +132,8 @@ function insertarTerminos(terminos, callback) {
 }
 
 function buscarTerminos(texto, callback) {
-    const busqueda = '%' + texto.toLowerCase() + '%';
-    const results = db.exec('SELECT * FROM terminos WHERE LOWER(titulo) LIKE ? ORDER BY titulo ASC LIMIT 50', [busqueda]);
+    const busqueda = '%' + quitarAcentos(texto.toLowerCase()) + '%';
+    const results = db.exec('SELECT * FROM terminos WHERE titulo_busqueda LIKE ? ORDER BY titulo ASC LIMIT 50', [busqueda]);
     const resultados = [];
     if (results.length > 0 && results[0].values) {
         results[0].values.forEach(row => {
@@ -412,10 +413,10 @@ function cargarDiccionarioTrilingue() {
 }
 
 function buscarTrilingue(texto) {
-    const busqueda = texto.toLowerCase();
+    const busqueda = quitarAcentos(texto.toLowerCase());
     return datosTrilingues.filter(function(entrada) {
         for (var clave in entrada) {
-            if (entrada[clave].toLowerCase().indexOf(busqueda) !== -1) return true;
+            if (quitarAcentos(entrada[clave].toLowerCase()).indexOf(busqueda) !== -1) return true;
         }
         return false;
     }).slice(0, 30);
